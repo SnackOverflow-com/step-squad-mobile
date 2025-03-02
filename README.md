@@ -2,9 +2,7 @@
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
-## Get started
-
-General note for adding different github account for a specific project:
+### General note for adding different github account for a specific project:
 
 1. Navigate to project:
 
@@ -25,6 +23,8 @@ git config user.email "your.personal.email@example.com"
 git config --local user.name
 git config --local user.email
 ```
+
+## Get started
 
 1. Install dependencies
 
