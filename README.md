@@ -4,6 +4,28 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
 
 ## Get started
 
+General note for adding different github account for a specific project:
+
+1. Navigate to project:
+
+```
+cd /path/to/project
+```
+
+2. Set the Git user name and email locally for this repository only:
+
+```
+git config user.name "Your Personal GitHub Username"
+git config user.email "your.personal.email@example.com"
+```
+
+3. Verify the configuration was applied correctly:
+
+```
+git config --local user.name
+git config --local user.email
+```
+
 1. Install dependencies
 
    ```bash
