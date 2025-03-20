@@ -18,15 +18,27 @@ const ErrorText = styled(BaseText)`
   color: ${({ theme }: { theme: DefaultTheme }) => theme.error};
 `;
 
+const BrandText = styled(BaseText)`
+  color: ${({ theme }: { theme: DefaultTheme }) => theme.primary.main};
+`;
+
+const Separator = styled(View)`
+  width: 100%;
+  height: 1px;
+  background-color: ${({ theme }: { theme: DefaultTheme }) => theme.neutral[30]};
+`;
+
 const HomeScreen = () => {
   return (
     <Container>
-      <BaseText weight="700" size="xl">
+      <BrandText weight="700" size="xl">
         Welcome to StepSquad
-      </BaseText>
+      </BrandText>
+
+      <Separator />
 
       <BaseText weight="600" size="l">
-        Font Demo
+        Font Demo and random bs components
       </BaseText>
 
       <BaseText weight="400">This is ManropeRegular font (weight 400)</BaseText>

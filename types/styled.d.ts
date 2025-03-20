@@ -5,7 +5,15 @@ declare module "styled-components/native" {
   export interface DefaultTheme {
     background: string;
     text: string;
-    primary: string;
+    textSecondary: string;
+    primary: {
+      main: string;
+      surface: string;
+      border: string;
+      hover: string;
+      pressed: string;
+      focus: string;
+    };
     secondary: string;
     accent: string;
     border: string;
@@ -13,7 +21,17 @@ declare module "styled-components/native" {
     error: string;
     success: string;
     warning: string;
-    info: string;
+    info: {
+      main: string;
+      surface: string;
+      border: string;
+      hover: string;
+      pressed: string;
+      focus: string;
+    };
+    neutral: {
+      [key: string]: string;
+    };
     fontFamily: {
       "400": string;
       "600": string;

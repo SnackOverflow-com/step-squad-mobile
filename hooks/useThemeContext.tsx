@@ -27,12 +27,43 @@ const typography = {
   },
 };
 
+export const primaryColors = {
+  main: "#FF9A01",
+  surface: "#FFEBCC",
+  border: "#FFDDAA",
+  hover: "#D48001",
+  pressed: "#804D01",
+  focus: "#FFEBCC",
+};
+
+export const infoColors = {
+  main: "#0167FF",
+  surface: "#CCE1FF",
+  border: "#E4E9ED",
+  hover: "#0156D4",
+  pressed: "#013480",
+  focus: "#CCE1FF",
+};
+
+export const neutralColors = {
+  10: "#FFFFFF",
+  20: "#EDF1F5",
+  30: "#E4E9ED",
+  40: "#DCE0E4",
+  50: "#C3C7CA",
+  60: "#A6A9AC",
+  70: "#858789",
+  80: "#747677",
+  90: "#595A5B",
+  100: "#2D2E2E",
+};
+
 // Define theme colors for both modes
 export const lightTheme = {
   background: "#FFFFFF",
   text: "#000000",
   textSecondary: "#555555",
-  primary: "#A1CEDC",
+  primary: primaryColors,
   secondary: "#5A8CA8",
   accent: "#3A5F77",
   border: "#E1E1E1",
@@ -40,15 +71,16 @@ export const lightTheme = {
   error: "#D32F2F",
   success: "#388E3C",
   warning: "#F57C00",
-  info: "#0288D1",
-  ...typography, // Add typography styles to the theme
+  neutral: neutralColors,
+  info: infoColors,
+  ...typography,
 };
 
 export const darkTheme = {
   background: "#121212",
   text: "#FFFFFF",
   textSecondary: "#AAAAAA",
-  primary: "#1D3D47",
+  primary: primaryColors,
   secondary: "#2A5769",
   accent: "#4A93B5",
   border: "#333333",
@@ -56,8 +88,9 @@ export const darkTheme = {
   error: "#EF5350",
   success: "#66BB6A",
   warning: "#FFA726",
-  info: "#29B6F6",
-  ...typography, // Add typography styles to the theme
+  neutral: neutralColors,
+  info: infoColors,
+  ...typography,
 };
 
 // Create the context with default values
