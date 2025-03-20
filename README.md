@@ -47,6 +47,40 @@ In the output, you'll find options to open the app in a
 
 You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
+## Code Formatting with Prettier
+
+This project uses [Prettier](https://prettier.io/) to maintain consistent code formatting. The configuration is defined in `.prettierrc.js`.
+
+### Format your code
+
+To format all files in the project:
+
+```bash
+npm run format
+```
+
+### Check if your code is formatted
+
+To check if files need formatting without making changes:
+
+```bash
+npm run format:check
+```
+
+### VSCode Integration
+
+For the best development experience with VSCode:
+
+1. Install the [Prettier extension](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+2. Add these settings to your VSCode workspace settings:
+
+```json
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}
+```
+
 ## Get a fresh project
 
 When you're ready, run:
