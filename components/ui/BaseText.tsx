@@ -21,11 +21,11 @@ const StyledText = styled(Text)<{
   }) => {
     switch (weight) {
       case "700":
-        return theme.fontFamily["700"];
+        return theme.fontWeight["700"];
       case "600":
-        return theme.fontFamily["600"];
+        return theme.fontWeight["600"];
       default:
-        return theme.fontFamily["400"];
+        return theme.fontWeight["400"];
     }
   }};
 

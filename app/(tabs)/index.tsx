@@ -27,7 +27,7 @@ Container.defaultProps = {
 
 // Example of custom styled BaseText
 const ErrorText = styled(BaseText)`
-  color: ${({ theme }: { theme: DefaultTheme }) => theme.error};
+  color: ${({ theme }: { theme: DefaultTheme }) => theme.error.main};
 `;
 
 const BrandText = styled(BaseText)`
@@ -38,7 +38,7 @@ const Separator = styled(View)`
   width: 100%;
   height: 1px;
   background-color: ${({ theme }: { theme: DefaultTheme }) =>
-    theme.neutral[30]};
+    theme.contrast[30]};
 `;
 
 const ButtonWrapper = styled(View)`
@@ -101,6 +101,8 @@ const HomeScreen = () => {
         <TextInput
           placeholder="Your precious name"
           label="Email"
+          // isDisabled
+          // error="This is an error"
           helperText="By entering your email, you agree to our terms and conditions"
           onChangeText={(text) => console.log(text)}
         />

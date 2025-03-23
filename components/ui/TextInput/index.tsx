@@ -1,44 +1,23 @@
 import React, { useState, useRef } from "react";
 import {
   TextInput as RNTextInput,
-  TextInputProps as RNTextInputProps,
   View,
-  Text,
   Animated,
   Pressable,
   NativeSyntheticEvent,
   TextInputFocusEventData,
 } from "react-native";
 import styled, { DefaultTheme } from "styled-components/native";
+
+import { textInputStates, hintTextStyles } from "./variants";
 import {
+  TextInputState,
+  TextInputProps,
   StyledTextInputContainerProps,
   StyledTextInputProps,
-  textInputStates,
-  labelStyles,
-  hintTextStyles,
-} from "./variants";
-
-// Define text input types
-export type TextInputState =
-  | "default"
-  | "hover"
-  | "focus"
-  | "filled"
-  | "error"
-  | "disabled";
-export type TextInputType = "normal" | "password" | "number" | "email";
-
-// Define text input props
-export interface TextInputProps extends Omit<RNTextInputProps, "disabled"> {
-  label?: string;
-  helperText?: string;
-  type?: TextInputType;
-  error?: string;
-  leftIcon?: React.ReactNode;
-  rightIcon?: React.ReactNode;
-  isDisabled?: boolean;
-  disabled?: boolean;
-}
+} from "./types";
+import BaseText from "../BaseText";
+import { css } from "styled-components";
 
 const AnimatedTextInput = Animated.createAnimatedComponent(RNTextInput);
 
@@ -54,74 +33,40 @@ const InputContainer = styled(View)<StyledTextInputContainerProps>`
   align-items: center;
   padding: 0 16px;
   height: 56px;
-  background-color: ${({
-    theme,
-    state,
-    disabled,
-  }: {
-    theme: DefaultTheme;
-    state: TextInputState;
-    disabled?: boolean;
-  }) =>
-    disabled
-      ? theme.neutral[20]
-      : state === "error"
-        ? "#FFECEC"
-        : theme.neutral[10]};
-  border-color: ${({
-    theme,
-    state,
-  }: {
-    theme: DefaultTheme;
-    state: TextInputState;
-  }) => textInputStates({ theme, state })};
+
+  ${({ state }: { state: TextInputState }) => textInputStates({ state })};
 `;
 
 const StyledTextInput = styled(AnimatedTextInput)<StyledTextInputProps>`
   flex: 1;
-  font-family: ${({ theme }: { theme: DefaultTheme }) =>
-    theme.fontFamily["400"]};
-  font-size: ${({ theme }: { theme: DefaultTheme }) => `${theme.fontSize.m}px`};
-  color: ${({
-    theme,
-    disabled,
-  }: {
-    theme: DefaultTheme;
-    disabled?: boolean;
-  }) => (disabled ? theme.neutral[50] : theme.neutral[100])};
   padding: 0;
+
+  ${({ disabled }: { disabled?: boolean }) =>
+    disabled
+      ? css`
+          color: ${({ theme }: { theme: DefaultTheme }) => theme.contrast[60]};
+        `
+      : css`
+          color: ${({ theme }: { theme: DefaultTheme }) => theme.text};
+        `}
 `;
 
-const Label = styled(Text)<{
+const Label = styled(BaseText)<{
   state: TextInputState;
   disabled?: boolean;
   theme: DefaultTheme;
 }>`
   margin-bottom: 6px;
-  color: ${(props: {
-    state: TextInputState;
-    disabled?: boolean;
-    theme: DefaultTheme;
-  }) => labelStyles(props)};
-  font-family: ${({ theme }: { theme: DefaultTheme }) =>
-    theme.fontFamily["600"]};
-  font-size: ${({ theme }: { theme: DefaultTheme }) => `${theme.fontSize.s}px`};
 `;
 
-const HintText = styled(Text)<{
+const HintText = styled(BaseText)<{
   state: TextInputState;
   disabled?: boolean;
-  theme: DefaultTheme;
 }>`
   margin-top: 6px;
-  color: ${(props: {
-    state: TextInputState;
-    disabled?: boolean;
-    theme: DefaultTheme;
-  }) => hintTextStyles(props)};
-  font-family: ${({ theme }: { theme: DefaultTheme }) =>
-    theme.fontFamily["400"]};
-  font-size: ${({ theme }: { theme: DefaultTheme }) => `${theme.fontSize.s}px`};
+
+  ${({ state, disabled }: { state: TextInputState; disabled?: boolean }) =>
+    hintTextStyles(state, disabled)}
 `;
 
 const IconContainer = styled(View)`
@@ -187,7 +132,12 @@ const TextInput = ({
   return (
     <Container>
       {label && (
-        <Label state={inputState} disabled={isInputDisabled}>
+        <Label
+          state={inputState}
+          fontWeight="600"
+          size="s"
+          disabled={isInputDisabled}
+        >
           {label}
         </Label>
       )}
@@ -224,6 +174,7 @@ const TextInput = ({
 
       {(helperText || error) && (
         <HintText
+          size="xs"
           state={error ? "error" : inputState}
           disabled={isInputDisabled}
         >

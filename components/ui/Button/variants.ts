@@ -3,19 +3,19 @@ import { css, DefaultTheme } from "styled-components/native";
 import { ButtonVariant, ButtonSize } from "./index";
 
 export interface StyledPressableProps {
-    variant: ButtonVariant;
-    size: ButtonSize;
-    isDisabled?: boolean;
-    theme: DefaultTheme;
-    pressed?: boolean;
-  }
+  variant: ButtonVariant;
+  size: ButtonSize;
+  isDisabled?: boolean;
+  theme: DefaultTheme;
+  pressed?: boolean;
+}
 
-  export interface ButtonTextProps {
-    variant: ButtonVariant;
-    size: ButtonSize;
-    isDisabled?: boolean;
-    theme: DefaultTheme;
-  }
+export interface ButtonTextProps {
+  variant: ButtonVariant;
+  size: ButtonSize;
+  isDisabled?: boolean;
+  theme: DefaultTheme;
+}
 
 // Base button styles based on size
 export const buttonSizeStyles = ({ size }: { size: ButtonSize }) => {
@@ -45,12 +45,14 @@ export const disabledStyles = css<StyledPressableProps>`
     if (variant === "outline" || variant === "ghost") {
       return css`
         background-color: transparent;
-        border-color: ${variant === "outline" ? theme.neutral[50] : "transparent"};
+        border-color: ${variant === "outline"
+          ? theme.contrast[50]
+          : "transparent"};
       `;
     }
 
     return css`
-      background-color: ${theme.neutral[50]};
+      background-color: ${theme.contrast[50]};
       border-color: transparent;
     `;
   }}
@@ -59,41 +61,41 @@ export const disabledStyles = css<StyledPressableProps>`
 
 // Primary button variant styles
 export const primaryStyles = css<StyledPressableProps>`
-  background-color: ${({ theme, pressed }) => 
+  background-color: ${({ theme, pressed }) =>
     pressed ? theme.primary.pressed : theme.primary.main};
   border-color: transparent;
   border-width: 0;
-  
+
   ${({ isDisabled }) => isDisabled && disabledStyles}
 `;
 
 // Secondary button variant styles
 export const secondaryStyles = css<StyledPressableProps>`
-  background-color: ${({ theme, pressed }) => 
+  background-color: ${({ theme, pressed }) =>
     pressed ? `${theme.info.pressed}` : theme.info.main};
   border-color: transparent;
   border-width: 0;
-  
+
   ${({ isDisabled }) => isDisabled && disabledStyles}
 `;
 
 // Outline button variant styles
 export const outlineStyles = css<StyledPressableProps>`
-  background-color: ${({ theme, pressed }) => 
-    pressed ? theme.primary.surface : 'transparent'};
+  background-color: ${({ theme, pressed }) =>
+    pressed ? theme.primary.surface : "transparent"};
   border-color: ${({ theme }) => theme.primary.main};
   border-width: 1px;
-  
+
   ${({ isDisabled }) => isDisabled && disabledStyles}
 `;
 
 // Ghost button variant styles
 export const ghostStyles = css<StyledPressableProps>`
-  background-color: ${({ theme, pressed }) => 
-    pressed ? theme.primary.surface : 'transparent'};
+  background-color: ${({ theme, pressed }) =>
+    pressed ? theme.primary.surface : "transparent"};
   border-color: transparent;
   border-width: 0;
-  
+
   ${({ isDisabled }) => isDisabled && disabledStyles}
 `;
 
@@ -114,15 +116,18 @@ export const getVariantStyles = ({ variant }: { variant: ButtonVariant }) => {
 };
 
 // Get text color function based on variant and state
-export const getTextColor = ({ variant, isDisabled, theme }: StyledPressableProps) => {
+export const getTextColor = ({
+  variant,
+  isDisabled,
+  theme,
+}: StyledPressableProps) => {
   if (isDisabled) {
-    return variant === "outline" || variant === "ghost" 
-      ? theme.neutral[70] 
+    return variant === "outline" || variant === "ghost"
+      ? theme.neutral[70]
       : theme.neutral[10];
   }
 
-  return variant === "primary" || variant === "secondary" 
-    ? theme.neutral[10] 
+  return variant === "primary" || variant === "secondary"
+    ? theme.neutral[10]
     : theme.primary.main;
 };
-

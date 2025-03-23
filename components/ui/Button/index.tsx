@@ -41,7 +41,7 @@ const ButtonText = styled(Text)<StyledPressableProps>`
   align-items: center;
   justify-content: center;
   font-family: ${({ theme }: { theme: DefaultTheme }) =>
-    theme.fontFamily["600"]};
+    theme.fontWeight["600"]};
   font-size: ${({ theme, size }: { theme: DefaultTheme; size: ButtonSize }) =>
     `${theme.fontSize[size]}px`};
   text-align: center;

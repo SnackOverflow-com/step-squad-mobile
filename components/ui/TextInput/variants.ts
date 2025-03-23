@@ -1,86 +1,59 @@
+import { css } from "styled-components";
 import { DefaultTheme } from "styled-components/native";
-import { TextInputState } from "./index";
 
-export interface StyledTextInputContainerProps {
-  state: TextInputState;
-  disabled?: boolean;
-  theme: DefaultTheme;
-}
-
-export interface StyledTextInputProps {
-  state: TextInputState;
-  disabled?: boolean;
-  theme: DefaultTheme;
-}
+import { TextInputState } from "./types";
 
 // Define border colors for different states
-export const textInputStates = ({
-  theme,
-  state,
-}: {
-  theme: DefaultTheme;
-  state: TextInputState;
-}): string => {
+export const textInputStates = ({ state }: { state: TextInputState }) => {
   switch (state) {
     case "default":
-      return theme.neutral[30]; // Default border color
-    case "hover":
-      return theme.neutral[60]; // Hover border color
+      return css`
+        background-color: ${({ theme }) => theme.background};
+        border-color: ${({ theme }) => theme.contrast[40]};
+      `;
     case "focus":
-      return theme.primary.main; // Focus border color
+      return css`
+        background-color: ${({ theme }) => theme.background};
+        border-color: ${({ theme }) => theme.primary.main};
+      `;
     case "filled":
-      return theme.neutral[30]; // Filled border color
+      return css`
+        background-color: ${({ theme }) => theme.background};
+        border-color: ${({ theme }) => theme.contrast[40]};
+      `;
     case "error":
-      return theme.error; // Error border color
+      return css`
+        background-color: ${({ theme }) => theme.background};
+        border-color: ${({ theme }) => theme.error.main};
+      `;
     case "disabled":
-      return theme.neutral[30]; // Disabled border color
+      return css`
+        background-color: ${({ theme }) => theme.contrast[20]};
+        border-color: ${({ theme }) => theme.contrast[40]};
+      `;
     default:
-      return theme.neutral[30];
-  }
-};
-
-// Define label text colors for different states
-export const labelStyles = ({
-  theme,
-  state,
-  disabled,
-}: {
-  theme: DefaultTheme;
-  state: TextInputState;
-  disabled?: boolean;
-}): string => {
-  if (disabled) {
-    return theme.neutral[50]; // Disabled label color
-  }
-
-  switch (state) {
-    case "error":
-      return theme.error; // Error label color
-    case "focus":
-      return theme.primary.main; // Focus label color
-    default:
-      return theme.neutral[100]; // Default, hover, filled label color
+      return css`
+        border-color: ${({ theme }) => theme.contrast[30]};
+      `;
   }
 };
 
 // Define hint text colors for different states
-export const hintTextStyles = ({
-  theme,
-  state,
-  disabled,
-}: {
-  theme: DefaultTheme;
-  state: TextInputState;
-  disabled?: boolean;
-}): string => {
+export const hintTextStyles = (state: TextInputState, disabled?: boolean) => {
   if (disabled) {
-    return theme.neutral[50]; // Disabled hint text color
+    return css`
+      color: ${({ theme }: { theme: DefaultTheme }) => theme.contrast[50]};
+    `;
   }
 
   switch (state) {
     case "error":
-      return theme.error; // Error hint text color
+      return css`
+        color: ${({ theme }: { theme: DefaultTheme }) => theme.error.main};
+      `;
     default:
-      return theme.neutral[70]; // Default, hover, focus, filled hint text color
+      return css`
+        color: ${({ theme }: { theme: DefaultTheme }) => theme.contrast[70]};
+      `;
   }
 };

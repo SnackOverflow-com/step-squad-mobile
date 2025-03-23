@@ -18,7 +18,14 @@ declare module "styled-components/native" {
     accent: string;
     border: string;
     card: string;
-    error: string;
+    error: {
+      main: string;
+      surface: string;
+      border: string;
+      hover: string;
+      pressed: string;
+      focus: string;
+    };
     success: string;
     warning: string;
     info: {
@@ -32,12 +39,16 @@ declare module "styled-components/native" {
     neutral: {
       [key: string]: string;
     };
-    fontFamily: {
+    contrast: {
+      [key: string]: string;
+    };
+    fontWeight: {
       "400": string;
       "600": string;
       "700": string;
     };
     fontSize: {
+      xs: number;
       s: number;
       m: number;
       l: number;
