@@ -2,6 +2,7 @@ import { Tabs } from "expo-router";
 import React from "react";
 import { Platform } from "react-native";
 import { Home, Compass } from "lucide-react-native";
+// import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { HapticTab } from "@/components/HapticTab";
 import TabBarBackground from "@/components/ui/TabBarBackground";
@@ -9,6 +10,7 @@ import { useThemeContext } from "@/hooks";
 
 export default function TabLayout() {
   const { theme } = useThemeContext();
+  // const insets = useSafeAreaInsets();
 
   return (
     <Tabs
@@ -17,6 +19,8 @@ export default function TabLayout() {
         tabBarInactiveTintColor: theme.text,
         tabBarStyle: {
           backgroundColor: theme.background,
+          // height: 60 + (Platform.OS === "ios" ? 0 : insets.bottom),
+          // paddingBottom: Platform.OS === "ios" ? 0 : insets.bottom,
           ...(Platform.OS === "ios" ? { position: "absolute" } : {}),
         },
         headerStyle: {

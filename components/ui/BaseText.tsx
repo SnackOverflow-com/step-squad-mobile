@@ -49,7 +49,7 @@ interface BaseTextProps extends TextProps {
 }
 
 // Exported component with default props
-export const BaseText: React.FC<BaseTextProps> = ({
+const BaseText: React.FC<BaseTextProps> = ({
   children,
   weight = "400",
   size = "m",
@@ -62,3 +62,5 @@ export const BaseText: React.FC<BaseTextProps> = ({
     </StyledText>
   );
 };
+
+export default BaseText;
