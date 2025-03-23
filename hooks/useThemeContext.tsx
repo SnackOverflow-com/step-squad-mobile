@@ -1,7 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { useColorScheme } from "react-native";
 import { ThemeProvider as StyledThemeProvider } from "styled-components/native";
-import { css } from "styled-components/native";
 
 // Define our theme types
 export type ThemeMode = "light" | "dark";

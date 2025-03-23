@@ -1,26 +1,14 @@
 import { Tabs } from "expo-router";
 import React from "react";
 import { Platform } from "react-native";
-import { useColorScheme } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
+import { Home, Compass } from "lucide-react-native";
 
 import { HapticTab } from "@/components/HapticTab";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { useThemeContext } from "@/hooks";
 
-/**
- * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
- */
-function TabBarIcon(props: {
-  name: React.ComponentProps<typeof FontAwesome>["name"];
-  color: string;
-}) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
-}
-
 export default function TabLayout() {
   const { theme } = useThemeContext();
-  const colorScheme = useColorScheme();
 
   return (
     <Tabs
@@ -44,7 +32,9 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Home",
-          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <Home size={24} color={color} style={{ marginBottom: -3 }} />
+          ),
         }}
       />
       <Tabs.Screen
@@ -52,7 +42,7 @@ export default function TabLayout() {
         options={{
           title: "Explore",
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="compass" color={color} />
+            <Compass size={24} color={color} style={{ marginBottom: -3 }} />
           ),
         }}
       />
