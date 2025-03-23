@@ -1,24 +1,14 @@
 import React from "react";
-import { Pressable, Text, PressableProps, Animated } from "react-native";
-import styled, { DefaultTheme } from "styled-components/native";
+import { Pressable, Animated } from "react-native";
+import styled from "styled-components/native";
 import {
   StyledPressableProps,
   buttonSizeStyles,
   getVariantStyles,
   getTextColor,
 } from "./variants";
-
-// Define button types
-export type ButtonVariant = "primary" | "secondary" | "outline" | "ghost";
-export type ButtonSize = "s" | "m" | "l";
-
-// Define button props
-interface ButtonProps extends PressableProps {
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-  isDisabled?: boolean;
-  children: React.ReactNode;
-}
+import BaseText from "../BaseText";
+import { ButtonProps } from "./types";
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
@@ -28,22 +18,16 @@ const StyledPressable = styled(AnimatedPressable)<StyledPressableProps>`
   justify-content: center;
   border-radius: 16px;
 
-  /* Apply size styles */
   ${(props: StyledPressableProps) => buttonSizeStyles(props)}
 
-  /* Apply variant-specific styles */
   ${(props: StyledPressableProps) => getVariantStyles(props)}
 `;
 
-const ButtonText = styled(Text)<StyledPressableProps>`
+const ButtonText = styled(BaseText)<StyledPressableProps>`
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  font-family: ${({ theme }: { theme: DefaultTheme }) =>
-    theme.fontWeight["600"]};
-  font-size: ${({ theme, size }: { theme: DefaultTheme; size: ButtonSize }) =>
-    `${theme.fontSize[size]}px`};
   text-align: center;
   color: ${(props: StyledPressableProps) => getTextColor(props)};
 `;
@@ -103,6 +87,7 @@ const Button = ({
       {...props}
     >
       <ButtonText
+        fontWeight="600"
         variant={variant}
         size={size}
         isDisabled={isButtonDisabled}
