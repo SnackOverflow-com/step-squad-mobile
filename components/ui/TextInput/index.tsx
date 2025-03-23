@@ -51,11 +51,7 @@ const StyledTextInput = styled(AnimatedTextInput)<StyledTextInputProps>`
         `}
 `;
 
-const Label = styled(BaseText)<{
-  state: TextInputState;
-  disabled?: boolean;
-  theme: DefaultTheme;
-}>`
+const Label = styled(BaseText)`
   margin-bottom: 6px;
 `;
 

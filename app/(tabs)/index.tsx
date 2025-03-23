@@ -101,6 +101,7 @@ const HomeScreen = () => {
         <TextInput
           placeholder="Your precious name"
           label="Email"
+          type="number"
           // isDisabled
           // error="This is an error"
           helperText="By entering your email, you agree to our terms and conditions"

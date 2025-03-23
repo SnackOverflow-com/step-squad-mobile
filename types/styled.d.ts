@@ -55,6 +55,7 @@ declare module "styled-components/native" {
       xl: number;
     };
     lineHeight: {
+      xs: number;
       s: number;
       m: number;
       l: number;

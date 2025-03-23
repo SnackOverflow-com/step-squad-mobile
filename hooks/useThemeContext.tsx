@@ -20,6 +20,7 @@ const typography = {
     xl: 24,
   },
   lineHeight: {
+    xs: 16,
     s: 20,
     m: 24,
     l: 28,
