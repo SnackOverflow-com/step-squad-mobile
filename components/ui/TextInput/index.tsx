@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   TextInput as RNTextInput,
   View,
@@ -6,6 +6,8 @@ import {
   Pressable,
   NativeSyntheticEvent,
   TextInputFocusEventData,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from "react-native";
 import styled, { DefaultTheme } from "styled-components/native";
 
@@ -102,6 +104,22 @@ const TextInput = ({
           : "default"
   );
 
+  // Effect to handle keyboard hide event
+  useEffect(() => {
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        if (inputRef.current) {
+          inputRef.current.blur();
+        }
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+    };
+  }, []);
+
   // Handle focus
   const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
     if (!isInputDisabled) {
@@ -125,59 +143,69 @@ const TextInput = ({
     }
   };
 
+  // Handle outside press to dismiss keyboard and blur input
+  const handleOutsidePress = () => {
+    Keyboard.dismiss();
+    if (inputRef.current) {
+      inputRef.current.blur();
+    }
+  };
+
   return (
-    <Container>
-      {label && (
-        <Label
-          state={inputState}
-          fontWeight="600"
-          size="s"
-          disabled={isInputDisabled}
-        >
-          {label}
-        </Label>
-      )}
-
-      <Pressable onPress={handleContainerPress}>
-        <InputContainer state={inputState} disabled={isInputDisabled}>
-          {leftIcon && <IconContainer>{leftIcon}</IconContainer>}
-
-          <StyledTextInput
-            ref={inputRef}
+    <TouchableWithoutFeedback onPress={handleOutsidePress}>
+      <Container>
+        {label && (
+          <Label
             state={inputState}
+            fontWeight="600"
+            size="s"
             disabled={isInputDisabled}
-            editable={!isInputDisabled}
-            placeholder={placeholder}
-            placeholderTextColor={isInputDisabled ? "#A6A9AC" : "#C3C7CA"}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            value={value}
-            secureTextEntry={type === "password"}
-            keyboardType={
-              type === "number"
-                ? "numeric"
-                : type === "email"
-                  ? "email-address"
-                  : "default"
-            }
-            style={style}
-            {...props}
-          />
+          >
+            {label}
+          </Label>
+        )}
 
-          {rightIcon && <IconContainer>{rightIcon}</IconContainer>}
-        </InputContainer>
-      </Pressable>
+        <Pressable onPress={handleContainerPress}>
+          <InputContainer state={inputState} disabled={isInputDisabled}>
+            {leftIcon && <IconContainer>{leftIcon}</IconContainer>}
 
-      {(helperText || error) && (
-        <HintText
-          size="xs"
-          state={error ? "error" : inputState}
-          disabled={isInputDisabled}
-        >
-          {error || helperText}
-        </HintText>
-      )}
-    </Container>
+            <StyledTextInput
+              ref={inputRef}
+              state={inputState}
+              disabled={isInputDisabled}
+              editable={!isInputDisabled}
+              placeholder={placeholder}
+              placeholderTextColor={isInputDisabled ? "#A6A9AC" : "#C3C7CA"}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+              value={value}
+              secureTextEntry={type === "password"}
+              keyboardType={
+                type === "number"
+                  ? "numeric"
+                  : type === "email"
+                    ? "email-address"
+                    : "default"
+              }
+              style={style}
+              {...props}
+            />
+
+            {rightIcon && <IconContainer>{rightIcon}</IconContainer>}
+          </InputContainer>
+        </Pressable>
+
+        {(helperText || error) && (
+          <HintText
+            size="xs"
+            state={error ? "error" : inputState}
+            disabled={isInputDisabled}
+          >
+            {error || helperText}
+          </HintText>
+        )}
+      </Container>
+    </TouchableWithoutFeedback>
   );
 };
 
