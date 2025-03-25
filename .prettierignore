@@ -1,0 +1,28 @@
+# Build artifacts
+node_modules
+.expo
+.expo-shared
+dist
+build
+web-build
+
+# Generated files
+.next
+coverage
+__generated__
+__snapshots__
+
+# Misc
+.DS_Store
+.env*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Package manager lock files
+package-lock.json
+yarn.lock
+
+# Generated typescript
+*.d.ts 

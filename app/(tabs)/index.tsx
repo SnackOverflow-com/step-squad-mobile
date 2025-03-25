@@ -1,74 +1,115 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import React, { ComponentProps } from "react";
+import { ScrollView, View } from "react-native";
+import styled from "styled-components/native";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { DefaultTheme } from "styled-components";
+import Button from "@/components/ui/Button";
+import { useThemeContext } from "@/hooks/useThemeContext";
+import { TrashIcon } from "lucide-react-native";
+import { BaseText, TextInput } from "@/components/ui";
+import SafeAreaWrapper from "@/components/SafeAreaWrapper";
 
-export default function HomeScreen() {
+// Local styled components
+const Container = styled(ScrollView)`
+  flex: 1;
+  background-color: ${({ theme }: { theme: DefaultTheme }) => theme.background};
+`;
+
+// Apply alignment styles to the content container
+Container.defaultProps = {
+  contentContainerStyle: {
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 16,
+    padding: 16,
+  },
+};
+
+// Example of custom styled BaseText
+const ErrorText = styled(BaseText)`
+  color: ${({ theme }: { theme: DefaultTheme }) => theme.error.main};
+`;
+
+const BrandText = styled(BaseText)`
+  color: ${({ theme }: { theme: DefaultTheme }) => theme.primary.main};
+`;
+
+const Separator = styled(View)`
+  width: 100%;
+  height: 1px;
+  background-color: ${({ theme }: { theme: DefaultTheme }) =>
+    theme.contrast[30]};
+`;
+
+const ButtonWrapper = styled(View)`
+  width: 100%;
+  gap: 8px;
+  padding: 16px;
+`;
+
+const StyledButton = styled(Button)<ComponentProps<typeof Button>>`
+  width: 100%;
+`;
+
+const StyledTrashIcon = styled(TrashIcon)`
+  color: ${({ theme }: { theme: DefaultTheme }) => theme.primary.main};
+`;
+
+const HomeScreen = () => {
+  const { toggleTheme } = useThemeContext();
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
-}
+    <SafeAreaWrapper>
+      <Container>
+        <BrandText weight="700" size="xl">
+          Welcome to StepSquad
+        </BrandText>
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
+        <Separator />
+
+        <BaseText weight="600" size="l">
+          Font Demo and random bs components
+        </BaseText>
+
+        <BaseText weight="400">
+          This is ManropeRegular font (weight 400)
+        </BaseText>
+
+        <BaseText weight="600">
+          This is ManropeSemiBold font (weight 600)
+        </BaseText>
+
+        <BaseText weight="700">This is ManropeBold font (weight 700)</BaseText>
+
+        <ErrorText>This is an error message with custom styling</ErrorText>
+
+        <ButtonWrapper>
+          <StyledButton
+            variant="primary"
+            size="l"
+            onPress={() => toggleTheme()}
+          >
+            Disco!
+          </StyledButton>
+        </ButtonWrapper>
+
+        <View>
+          <Button variant="outline" size="s">
+            <StyledTrashIcon />
+          </Button>
+        </View>
+
+        <TextInput
+          placeholder="Your precious name"
+          label="Email"
+          type="number"
+          // isDisabled
+          // error="This is an error"
+          helperText="By entering your email, you agree to our terms and conditions"
+          onChangeText={(text) => console.log(text)}
+        />
+      </Container>
+    </SafeAreaWrapper>
+  );
+};
+
+export default HomeScreen;
