@@ -1,6 +1,10 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
-import { useColorScheme } from "react-native";
+import { useColorScheme, ActivityIndicator, View } from "react-native";
 import { ThemeProvider as StyledThemeProvider } from "styled-components/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+// Storage key for persisting theme preference
+const THEME_PREFERENCE_KEY = "@step-squad-mobile:themeMode";
 
 // Define our theme types
 export type ThemeMode = "light" | "dark";
@@ -17,7 +21,8 @@ const typography = {
     s: 14,
     m: 16,
     l: 18,
-    xl: 24,
+    xl: 20,
+    xxl: 24,
   },
   lineHeight: {
     xs: 16,
@@ -25,6 +30,7 @@ const typography = {
     m: 24,
     l: 28,
     xl: 32,
+    xxl: 36,
   },
 };
 
@@ -86,9 +92,9 @@ export const contrastColors = (mode: ThemeMode) => {
 
 // Define theme colors for both modes
 export const lightTheme = {
-  background: "#FFFFFF",
-  text: "#000000",
-  textSecondary: "#555555",
+  background: neutralColors[10],
+  text: neutralColors[100],
+  textSecondary: contrastColors("light")[70],
   primary: primaryColors,
   secondary: "#5A8CA8",
   accent: "#3A5F77",
@@ -104,9 +110,9 @@ export const lightTheme = {
 };
 
 export const darkTheme = {
-  background: "#121212",
-  text: "#FFFFFF",
-  textSecondary: "#AAAAAA",
+  background: neutralColors[100],
+  text: neutralColors[10],
+  textSecondary: contrastColors("dark")[40],
   primary: primaryColors,
   secondary: "#2A5769",
   accent: "#4A93B5",
@@ -143,25 +149,81 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   // Get the device color scheme
   const deviceColorScheme = useColorScheme();
 
-  // Initialize theme based on device preference
-  const [themeMode, setThemeMode] = useState<ThemeMode>(
-    deviceColorScheme === "dark" ? "dark" : "light"
-  );
+  // Initialize with a loading state
+  const [themeMode, setThemeMode] = useState<ThemeMode | null>(null);
+  const [isManuallySet, setIsManuallySet] = useState<boolean>(false);
 
-  // Update the theme when device preference changes
+  // Load saved theme preference on mount
   useEffect(() => {
-    if (deviceColorScheme) {
+    const loadSavedThemePreference = async () => {
+      try {
+        const savedThemeData = await AsyncStorage.getItem(THEME_PREFERENCE_KEY);
+
+        if (savedThemeData) {
+          const parsedData = JSON.parse(savedThemeData);
+          setThemeMode(parsedData.themeMode);
+          setIsManuallySet(parsedData.isManuallySet);
+        } else {
+          // If no saved preference, use device preference
+          setThemeMode(deviceColorScheme === "dark" ? "dark" : "light");
+          setIsManuallySet(false);
+        }
+      } catch (error) {
+        console.error("Failed to load theme preference:", error);
+        // Fallback to device preference
+        setThemeMode(deviceColorScheme === "dark" ? "dark" : "light");
+      }
+    };
+
+    loadSavedThemePreference();
+  }, []);
+
+  // Update the theme when device preference changes, but only if not manually set
+  useEffect(() => {
+    if (!isManuallySet && deviceColorScheme) {
       setThemeMode(deviceColorScheme === "dark" ? "dark" : "light");
     }
-  }, [deviceColorScheme]);
+  }, [deviceColorScheme, isManuallySet]);
 
-  // Toggle between light and dark themes
-  const toggleTheme = () => {
-    setThemeMode((prev) => (prev === "light" ? "dark" : "light"));
+  // Toggle between light and dark themes and persist the choice
+  const toggleTheme = async () => {
+    const newThemeMode = themeMode === "light" ? "dark" : "light";
+
+    try {
+      // Save the new theme preference
+      await AsyncStorage.setItem(
+        THEME_PREFERENCE_KEY,
+        JSON.stringify({
+          themeMode: newThemeMode,
+          isManuallySet: true,
+        })
+      );
+
+      // Update the state
+      setThemeMode(newThemeMode);
+      setIsManuallySet(true);
+    } catch (error) {
+      console.error("Failed to save theme preference:", error);
+      // Still update the UI even if saving fails
+      setThemeMode(newThemeMode);
+    }
   };
 
-  // Get the current theme object
-  const theme = themeMode === "light" ? lightTheme : darkTheme;
+  // Get the current theme object - ensure we have a default while loading
+  const theme = themeMode === "dark" ? darkTheme : lightTheme;
+
+  // Wait until theme is loaded before rendering
+  if (themeMode === null) {
+    return (
+      <StyledThemeProvider theme={lightTheme}>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <ActivityIndicator size="large" color={primaryColors.main} />
+        </View>
+      </StyledThemeProvider>
+    );
+  }
 
   return (
     <ThemeContext.Provider value={{ theme, themeMode, toggleTheme }}>

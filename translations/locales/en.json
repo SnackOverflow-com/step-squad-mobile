@@ -1,0 +1,10 @@
+{
+  "login.welcome": "Welcome to StepSquad 👋",
+  "login.subtitle": "Login to access your account and continue your journey",
+  "login.email": "Email",
+  "login.email.placeholder": "Enter your email",
+  "login.password": "Password",
+  "login.password.placeholder": "Enter your password",
+  "login.button": "Login",
+  "login.register.link": "Don't have an account? Register"
+} 

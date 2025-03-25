@@ -24,7 +24,6 @@ import { css } from "styled-components";
 const AnimatedTextInput = Animated.createAnimatedComponent(RNTextInput);
 
 const Container = styled(View)`
-  margin-bottom: 16px;
   width: 100%;
 `;
 
@@ -42,6 +41,8 @@ const InputContainer = styled(View)<StyledTextInputContainerProps>`
 const StyledTextInput = styled(AnimatedTextInput)<StyledTextInputProps>`
   flex: 1;
   padding: 0;
+  font-size: ${({ theme }: { theme: DefaultTheme }) => theme.fontSize.m};
+  line-height: ${({ theme }: { theme: DefaultTheme }) => theme.lineHeight.m};
 
   ${({ disabled }: { disabled?: boolean }) =>
     disabled
@@ -81,7 +82,7 @@ const TextInput = ({
   isDisabled = false,
   disabled,
   style,
-  placeholder = "Placeholder",
+  placeholder,
   value,
   onFocus,
   onBlur,

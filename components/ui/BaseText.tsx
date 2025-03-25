@@ -4,22 +4,22 @@ import styled from "styled-components/native";
 import { DefaultTheme } from "styled-components/native";
 
 type FontWeight = "400" | "600" | "700";
-type FontSize = "s" | "m" | "l" | "xl";
+type FontSize = "xs" | "s" | "m" | "l" | "xl" | "xxl";
 
 // Base text component with proper theme typing
 const StyledText = styled(Text)<{
-  weight: FontWeight;
+  fontWeight: FontWeight;
   size: FontSize;
   color?: string;
 }>`
   font-family: ${({
     theme,
-    weight,
+    fontWeight,
   }: {
     theme: DefaultTheme;
-    weight: FontWeight;
+    fontWeight: FontWeight;
   }) => {
-    switch (weight) {
+    switch (fontWeight) {
       case "700":
         return theme.fontWeight["700"];
       case "600":
@@ -43,7 +43,7 @@ const StyledText = styled(Text)<{
 `;
 
 interface BaseTextProps extends TextProps {
-  weight?: FontWeight;
+  fontWeight?: FontWeight;
   size?: FontSize;
   color?: string;
 }
@@ -51,13 +51,13 @@ interface BaseTextProps extends TextProps {
 // Exported component with default props
 const BaseText: React.FC<BaseTextProps> = ({
   children,
-  weight = "400",
+  fontWeight = "400",
   size = "m",
   color,
   ...props
 }) => {
   return (
-    <StyledText weight={weight} size={size} color={color} {...props}>
+    <StyledText fontWeight={fontWeight} size={size} color={color} {...props}>
       {children}
     </StyledText>
   );
