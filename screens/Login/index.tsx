@@ -1,9 +1,12 @@
-import React, { useState } from "react";
-import { View, Pressable, Linking } from "react-native";
+import React from "react";
+import { View, Pressable, Linking, ActivityIndicator } from "react-native";
 import { Link } from "expo-router";
 import styled from "styled-components/native";
 import { DefaultTheme } from "styled-components/native";
 import { useIntl } from "react-intl";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
 import { useAuth } from "@/hooks";
 import Button from "@/components/ui/Button";
@@ -12,6 +15,14 @@ import BaseText from "@/components/ui/BaseText";
 import SafeAreaWrapper from "@/components/SafeAreaWrapper";
 import Header from "./Header";
 import { messages } from "./messages";
+
+// Form validation schema
+const loginSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+type LoginFormValues = z.infer<typeof loginSchema>;
 
 const Container = styled(View)`
   flex: 1;
@@ -29,11 +40,6 @@ const LinksWrapper = styled(View)`
   justify-content: space-between;
 `;
 
-const LinkText = styled(BaseText)`
-  text-align: center;
-  margin-top: 16px;
-`;
-
 const UnderlinedText = styled(BaseText)`
   text-decoration-line: underline;
   color: ${({ theme }: { theme: DefaultTheme }) => theme.textSecondary};
@@ -44,16 +50,57 @@ const UnderlinedBrandText = styled(BaseText)`
   color: ${({ theme }: { theme: DefaultTheme }) => theme.primary.main};
 `;
 
+const ErrorText = styled(BaseText)`
+  color: ${({ theme }: { theme: DefaultTheme }) => theme.error.main};
+  margin-top: 4px;
+`;
+
+const ButtonContent = styled(View)`
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+`;
+
 const LoginScreen = () => {
   const { login } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
   const { formatMessage } = useIntl();
 
-  const handleLogin = () => {
-    // For now, just call the login function without validation
-    login();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    setError,
+  } = useForm<LoginFormValues>({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+    resolver: zodResolver(loginSchema),
+  });
+
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const onSubmit = async (formData: LoginFormValues) => {
+    try {
+      setIsLoading(true);
+      await login(formData);
+      // No need to navigate - AuthContext will handle redirection
+    } catch (error: any) {
+      // Handle specific errors from the API
+      if (error?.response?.status === 401) {
+        setError("root", {
+          message: "Incorrect email or password",
+        });
+      } else {
+        setError("root", {
+          message: "Something went wrong. Please try again.",
+        });
+      }
+      console.error("Login error:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleSendEmail = () => {
@@ -66,23 +113,53 @@ const LoginScreen = () => {
         <Header />
 
         <InputWrapper>
-          <TextInput
-            label={formatMessage(messages.email)}
-            placeholder="johndoe@stepsquad.com"
-            value={email}
-            onChangeText={setEmail}
-            type="email"
-            autoCapitalize="none"
-            autoCorrect={false}
+          <Controller
+            control={control}
+            name="email"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <View>
+                <TextInput
+                  label={formatMessage(messages.email)}
+                  placeholder="johndoe@stepsquad.com"
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  type="email"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  error={
+                    errors.email ? String(errors.email.message) : undefined
+                  }
+                />
+              </View>
+            )}
           />
 
-          <TextInput
-            label={formatMessage(messages.password)}
-            value={password}
-            onChangeText={setPassword}
-            type="password"
-            secureTextEntry
+          <Controller
+            control={control}
+            name="password"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <View>
+                <TextInput
+                  label={formatMessage(messages.password)}
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  type="password"
+                  secureTextEntry
+                  error={
+                    errors.password
+                      ? String(errors.password.message)
+                      : undefined
+                  }
+                />
+              </View>
+            )}
           />
+
+          {errors.root && (
+            <ErrorText size="xs">{errors.root.message}</ErrorText>
+          )}
 
           <LinksWrapper>
             <Pressable onPress={handleSendEmail}>
@@ -101,8 +178,21 @@ const LoginScreen = () => {
           </LinksWrapper>
         </InputWrapper>
 
-        <Button onPress={handleLogin} style={{ marginTop: 56 }}>
-          {formatMessage(messages.login)}
+        <Button
+          onPress={handleSubmit(onSubmit)}
+          style={{ marginTop: 56 }}
+          isDisabled={isLoading}
+        >
+          {isLoading ? (
+            <ButtonContent>
+              <ActivityIndicator size="small" color="white" />
+              <BaseText color="white" fontWeight="600">
+                {formatMessage(messages.login)}
+              </BaseText>
+            </ButtonContent>
+          ) : (
+            formatMessage(messages.login)
+          )}
         </Button>
 
         <Pressable style={{ alignItems: "center" }}>

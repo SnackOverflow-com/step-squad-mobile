@@ -12,17 +12,21 @@ import "react-native-reanimated";
 
 import { ThemeProvider, useColorScheme, AuthProvider, useAuth } from "@/hooks";
 import { IntlProviderWrapper } from "@/translations/intlConfig";
+import { ReactQueryProvider } from "@/services/queryClient";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 // Auth route protection component
 function AuthGuard({ children }: { children: ReactNode }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   const segments = useSegments();
   const router = useRouter();
 
   useEffect(() => {
+    // Skip redirection while authentication state is loading
+    if (isLoading) return;
+
     // Check if the current route is in the auth group
     const inAuthGroup = segments.length > 0 && segments[0] === "(auth)";
 
@@ -33,7 +37,7 @@ function AuthGuard({ children }: { children: ReactNode }) {
       // Redirect to home page if authenticated and trying to access auth pages
       router.replace("/(tabs)" as any);
     }
-  }, [isAuthenticated, segments, router]);
+  }, [isAuthenticated, isLoading, segments, router]);
 
   return <>{children}</>;
 }
@@ -60,22 +64,30 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider>
-      <IntlProviderWrapper>
-        <AuthProvider>
-          <NavigationThemeProvider
-            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-          >
-            <AuthGuard>
-              <Stack>
-                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                <Stack.Screen name="+not-found" />
-              </Stack>
-              <StatusBar style="auto" />
-            </AuthGuard>
-          </NavigationThemeProvider>
-        </AuthProvider>
-      </IntlProviderWrapper>
+      <ReactQueryProvider>
+        <IntlProviderWrapper>
+          <AuthProvider>
+            <NavigationThemeProvider
+              value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+            >
+              <AuthGuard>
+                <Stack>
+                  <Stack.Screen
+                    name="(auth)"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="(tabs)"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen name="+not-found" />
+                </Stack>
+                <StatusBar style="auto" />
+              </AuthGuard>
+            </NavigationThemeProvider>
+          </AuthProvider>
+        </IntlProviderWrapper>
+      </ReactQueryProvider>
     </ThemeProvider>
   );
 }

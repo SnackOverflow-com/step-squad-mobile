@@ -48,19 +48,21 @@ interface BaseTextProps extends TextProps {
   color?: string;
 }
 
-// Exported component with default props
-const BaseText: React.FC<BaseTextProps> = ({
-  children,
-  fontWeight = "400",
-  size = "m",
-  color,
-  ...props
-}) => {
-  return (
-    <StyledText fontWeight={fontWeight} size={size} color={color} {...props}>
+// Updated to use forwardRef to properly handle refs
+const BaseText = React.forwardRef<Text, BaseTextProps>(
+  ({ children, fontWeight = "400", size = "m", color, ...props }, ref) => (
+    <StyledText
+      fontWeight={fontWeight}
+      size={size}
+      color={color}
+      {...props}
+      ref={ref}
+    >
       {children}
     </StyledText>
-  );
-};
+  )
+);
 
 export default BaseText;
+
+BaseText.displayName = "BaseText";
