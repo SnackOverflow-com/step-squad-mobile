@@ -9,8 +9,10 @@ import React, {
 import {
   loginUser as apiLoginUser,
   logoutUser as apiLogoutUser,
+  registerUser as apiRegisterUser,
   checkAuth,
   LoginCredentials,
+  RegisterCredentials,
 } from "@/services/api/auth";
 
 // Define the context type
@@ -19,7 +21,7 @@ interface AuthContextType {
   isLoading: boolean;
   login: (credentials: LoginCredentials) => Promise<void>;
   logout: () => Promise<void>;
-  register: () => Promise<void>;
+  register: (credentials: RegisterCredentials) => Promise<void>;
 }
 
 // Create the context with default values
@@ -80,9 +82,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   // Function to handle registration
-  const register = async () => {
-    // This is a placeholder - implement your registration logic
-    setIsAuthenticated(true);
+  const register = async (credentials: RegisterCredentials) => {
+    try {
+      await apiRegisterUser(credentials);
+      setIsAuthenticated(true);
+    } catch (error) {
+      console.error("Registration error:", error);
+      throw error;
+    }
   };
 
   // Provide the auth context values to children

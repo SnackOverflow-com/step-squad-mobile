@@ -6,6 +6,13 @@ export interface LoginCredentials {
   password: string;
 }
 
+export interface RegisterCredentials {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}
+
 export interface LoginResponse {
   token: string;
   user: {
@@ -28,6 +35,31 @@ export const loginUser = async (
     // This is a placeholder - replace with your actual API endpoint
     const response = await apiClient.post<LoginResponse>(
       "/auth/login",
+      credentials
+    );
+
+    // Store the auth token in AsyncStorage
+    await AsyncStorage.setItem("auth_token", response.data.token);
+
+    return response.data;
+  } catch (error) {
+    // Re-throw the error for the caller to handle
+    throw error;
+  }
+};
+
+/**
+ * Register a new user
+ * @param credentials The user registration credentials
+ * @returns A promise with the registration response data
+ */
+export const registerUser = async (
+  credentials: RegisterCredentials
+): Promise<LoginResponse> => {
+  try {
+    // This is a placeholder - replace with your actual API endpoint
+    const response = await apiClient.post<LoginResponse>(
+      "/auth/register",
       credentials
     );
 
