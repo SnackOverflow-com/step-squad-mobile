@@ -31,11 +31,11 @@ const StyledText = styled(Text)<{
 
   font-size: ${({ theme, size }: { theme: DefaultTheme; size: FontSize }) => {
     return theme.fontSize[size];
-  }}px;
+  }};
 
   line-height: ${({ theme, size }: { theme: DefaultTheme; size: FontSize }) => {
     return theme.lineHeight[size];
-  }}px;
+  }};
 
   color: ${({ theme, color }: { theme: DefaultTheme; color?: string }) => {
     return color || theme.text;
