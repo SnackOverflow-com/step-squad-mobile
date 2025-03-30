@@ -4,22 +4,22 @@ import styled from "styled-components/native";
 import { DefaultTheme } from "styled-components/native";
 
 type FontWeight = "400" | "600" | "700";
-type FontSize = "s" | "m" | "l" | "xl";
+type FontSize = "xs" | "s" | "m" | "l" | "xl" | "xxl";
 
 // Base text component with proper theme typing
 const StyledText = styled(Text)<{
-  weight: FontWeight;
+  fontWeight: FontWeight;
   size: FontSize;
   color?: string;
 }>`
   font-family: ${({
     theme,
-    weight,
+    fontWeight,
   }: {
     theme: DefaultTheme;
-    weight: FontWeight;
+    fontWeight: FontWeight;
   }) => {
-    switch (weight) {
+    switch (fontWeight) {
       case "700":
         return theme.fontWeight["700"];
       case "600":
@@ -31,11 +31,11 @@ const StyledText = styled(Text)<{
 
   font-size: ${({ theme, size }: { theme: DefaultTheme; size: FontSize }) => {
     return theme.fontSize[size];
-  }}px;
+  }};
 
   line-height: ${({ theme, size }: { theme: DefaultTheme; size: FontSize }) => {
     return theme.lineHeight[size];
-  }}px;
+  }};
 
   color: ${({ theme, color }: { theme: DefaultTheme; color?: string }) => {
     return color || theme.text;
@@ -43,24 +43,26 @@ const StyledText = styled(Text)<{
 `;
 
 interface BaseTextProps extends TextProps {
-  weight?: FontWeight;
+  fontWeight?: FontWeight;
   size?: FontSize;
   color?: string;
 }
 
-// Exported component with default props
-const BaseText: React.FC<BaseTextProps> = ({
-  children,
-  weight = "400",
-  size = "m",
-  color,
-  ...props
-}) => {
-  return (
-    <StyledText weight={weight} size={size} color={color} {...props}>
+// Updated to use forwardRef to properly handle refs
+const BaseText = React.forwardRef<Text, BaseTextProps>(
+  ({ children, fontWeight = "400", size = "m", color, ...props }, ref) => (
+    <StyledText
+      fontWeight={fontWeight}
+      size={size}
+      color={color}
+      {...props}
+      ref={ref}
+    >
       {children}
     </StyledText>
-  );
-};
+  )
+);
 
 export default BaseText;
+
+BaseText.displayName = "BaseText";

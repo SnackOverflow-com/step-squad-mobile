@@ -56,29 +56,31 @@ const StyledTrashIcon = styled(TrashIcon)`
 `;
 
 const HomeScreen = () => {
-  const { toggleTheme } = useThemeContext();
+  const { toggleTheme, themeMode } = useThemeContext();
   return (
     <SafeAreaWrapper>
       <Container>
-        <BrandText weight="700" size="xl">
+        <BrandText fontWeight="700" size="xl">
           Welcome to StepSquad
         </BrandText>
 
         <Separator />
 
-        <BaseText weight="600" size="l">
+        <BaseText fontWeight="600" size="l">
           Font Demo and random bs components
         </BaseText>
 
-        <BaseText weight="400">
+        <BaseText fontWeight="400">
           This is ManropeRegular font (weight 400)
         </BaseText>
 
-        <BaseText weight="600">
+        <BaseText fontWeight="600">
           This is ManropeSemiBold font (weight 600)
         </BaseText>
 
-        <BaseText weight="700">This is ManropeBold font (weight 700)</BaseText>
+        <BaseText fontWeight="700">
+          This is ManropeBold font (weight 700)
+        </BaseText>
 
         <ErrorText>This is an error message with custom styling</ErrorText>
 
@@ -88,7 +90,7 @@ const HomeScreen = () => {
             size="l"
             onPress={() => toggleTheme()}
           >
-            Disco!
+            Switch to {themeMode === "light" ? "Dark" : "Light"} Theme
           </StyledButton>
         </ButtonWrapper>
 

@@ -1,13 +1,14 @@
 import React, { PropsWithChildren } from "react";
-import { StyleSheet, View, ViewProps } from "react-native";
+import { StyleSheet, View, ViewProps, StatusBar } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import styled, { DefaultTheme } from "styled-components/native";
+import styled, { DefaultTheme, useTheme } from "styled-components/native";
 
 type SafeAreaWrapperProps = PropsWithChildren & {
   topInset?: boolean;
   bottomInset?: boolean;
   style?: ViewProps["style"];
   backgroundColor?: string;
+  statusBarStyle?: "dark-content" | "light-content" | "default";
 };
 
 // Inner container that applies the safe area insets
@@ -26,23 +27,36 @@ export const SafeAreaWrapper = ({
   bottomInset = true,
   style,
   backgroundColor,
+  statusBarStyle = "default",
 }: SafeAreaWrapperProps) => {
   const insets = useSafeAreaInsets();
+  const theme = useTheme();
+
+  // Use the provided backgroundColor or fall back to theme background color
+  const bgColor = backgroundColor || theme.background;
 
   return (
-    <Container
-      style={[
-        styles.container,
-        {
-          paddingTop: topInset ? insets.top : 0,
-          paddingBottom: bottomInset ? insets.bottom : 0,
-          backgroundColor: backgroundColor,
-        },
-        style,
-      ]}
-    >
-      {children}
-    </Container>
+    <>
+      <StatusBar
+        backgroundColor={bgColor}
+        barStyle={statusBarStyle}
+        translucent
+      />
+
+      <Container
+        style={[
+          styles.container,
+          {
+            paddingTop: topInset ? insets.top : 0,
+            paddingBottom: bottomInset ? insets.bottom : 0,
+            backgroundColor: bgColor,
+          },
+          style,
+        ]}
+      >
+        {children}
+      </Container>
+    </>
   );
 };
 

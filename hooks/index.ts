@@ -10,3 +10,4 @@ export {
   darkTheme,
   type ThemeMode,
 } from "./useThemeContext";
+export { useAuth, AuthProvider } from "./AuthContext";

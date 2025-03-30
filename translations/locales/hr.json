@@ -1,0 +1,10 @@
+{
+  "login.welcome": "Dobrodošli u StepSquad 👋",
+  "login.subtitle": "Prijavite se za pristup vašem računu i nastavak putovanja",
+  "login.email": "E-mail",
+  "login.email.placeholder": "Unesite vašu e-mail adresu",
+  "login.password": "Lozinka",
+  "login.password.placeholder": "Unesite vašu lozinku",
+  "login.button": "Prijava",
+  "login.register.link": "Nemate račun? Registrirajte se"
+} 
