@@ -83,7 +83,7 @@ export const secondaryStyles = css<StyledPressableProps>`
 export const outlineStyles = css<StyledPressableProps>`
   background-color: ${({ theme, pressed }) =>
     pressed ? theme.contrast[10] : "transparent"};
-  border-color: ${({ theme }) => theme.primary.main};
+  border-color: ${({ theme }) => theme.border};
   border-width: 1px;
 
   ${({ isDisabled }) => isDisabled && disabledStyles}
@@ -129,5 +129,5 @@ export const getTextColor = ({
 
   return variant === "primary" || variant === "secondary"
     ? theme.neutral[10]
-    : theme.primary.main;
+    : theme.neutral[100];
 };

@@ -99,7 +99,7 @@ export const lightTheme = {
   secondary: "#5A8CA8",
   accent: "#3A5F77",
   border: "#E1E1E1",
-  card: "#F5F5F5",
+  card: "#f8f8f8",
   error: errorColors,
   success: "#388E3C",
   warning: "#F57C00",

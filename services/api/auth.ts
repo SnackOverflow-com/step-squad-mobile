@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import apiClient from "./client";
+import { verifyStoredToken } from "@/services/utils/jwt";
 
 export interface LoginCredentials {
   email: string;
@@ -95,12 +96,12 @@ export const logoutUser = async (): Promise<void> => {
 
 /**
  * Check if the user is already authenticated
- * @returns A boolean indicating if the user has a stored token
+ * @returns A boolean indicating if the user has a valid token
  */
 export const checkAuth = async (): Promise<boolean> => {
   try {
-    const token = await AsyncStorage.getItem("auth_token");
-    return !!token;
+    // Use our JWT utility to verify if the token exists and is not expired
+    return await verifyStoredToken();
   } catch (error) {
     console.error("Auth check error:", error);
     return false;
@@ -117,6 +118,8 @@ export const fetchCurrentUser = async (): Promise<User> => {
     return response.data;
   } catch (error) {
     console.error("Fetch current user error:", error);
+    // The 401 handling is already done in the apiClient interceptor
+    // which will trigger the auth events system
     throw error;
   }
 };

@@ -30,6 +30,7 @@ const StyledBellIcon = styled(BellIcon)`
 
 const StyledButton = styled(Button)`
   padding: 6px;
+  border-radius: 8px;
 `;
 
 const Header = () => {
