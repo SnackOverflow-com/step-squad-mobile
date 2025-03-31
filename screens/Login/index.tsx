@@ -1,10 +1,9 @@
 import React from "react";
-import { View, Pressable, Linking, ActivityIndicator } from "react-native";
+import { ActivityIndicator, Linking, Pressable, View } from "react-native";
 import { Link } from "expo-router";
-import styled from "styled-components/native";
-import { DefaultTheme } from "styled-components/native";
+import styled, { DefaultTheme } from "styled-components/native";
 import { useIntl } from "react-intl";
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
