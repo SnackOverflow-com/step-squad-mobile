@@ -11,3 +11,4 @@ export {
   type ThemeMode,
 } from "./useThemeContext";
 export { useAuth, AuthProvider } from "./AuthContext";
+export { useUser } from "./useUser";

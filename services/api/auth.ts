@@ -13,14 +13,18 @@ export interface RegisterCredentials {
   password: string;
 }
 
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  firstName?: string;
+  lastName?: string;
+  // Add any other user properties that might be returned by the API
+}
+
 export interface LoginResponse {
   token: string;
-  user: {
-    id: string;
-    email: string;
-    name: string;
-    // Add any other user properties returned by your API
-  };
+  user: User;
 }
 
 /**
@@ -100,5 +104,19 @@ export const checkAuth = async (): Promise<boolean> => {
   } catch (error) {
     console.error("Auth check error:", error);
     return false;
+  }
+};
+
+/**
+ * Fetch the current user data
+ * @returns The current user data
+ */
+export const fetchCurrentUser = async (): Promise<User> => {
+  try {
+    const response = await apiClient.get<User>("/user/me");
+    return response.data;
+  } catch (error) {
+    console.error("Fetch current user error:", error);
+    throw error;
   }
 };

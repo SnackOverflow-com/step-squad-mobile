@@ -14,6 +14,7 @@ import {
   LoginCredentials,
   RegisterCredentials,
 } from "@/services/api/auth";
+import { queryClient } from "@/services/queryClient";
 
 // Define the context type
 interface AuthContextType {
@@ -64,6 +65,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       await apiLoginUser(credentials);
       setIsAuthenticated(true);
+      // Invalidate user query to trigger a refetch when the hook is called
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
     } catch (error) {
       console.error("Login error:", error);
       throw error;
@@ -75,6 +78,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       await apiLogoutUser();
       setIsAuthenticated(false);
+      // Clear user data from cache
+      queryClient.removeQueries({ queryKey: ["currentUser"] });
     } catch (error) {
       console.error("Logout error:", error);
       throw error;
@@ -86,6 +91,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       await apiRegisterUser(credentials);
       setIsAuthenticated(true);
+      // Invalidate user query to trigger a refetch when the hook is called
+      queryClient.invalidateQueries({ queryKey: ["currentUser"] });
     } catch (error) {
       console.error("Registration error:", error);
       throw error;
