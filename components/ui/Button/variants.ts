@@ -82,7 +82,7 @@ export const secondaryStyles = css<StyledPressableProps>`
 // Outline button variant styles
 export const outlineStyles = css<StyledPressableProps>`
   background-color: ${({ theme, pressed }) =>
-    pressed ? theme.primary.surface : "transparent"};
+    pressed ? theme.contrast[10] : "transparent"};
   border-color: ${({ theme }) => theme.primary.main};
   border-width: 1px;
 
@@ -92,7 +92,7 @@ export const outlineStyles = css<StyledPressableProps>`
 // Ghost button variant styles
 export const ghostStyles = css<StyledPressableProps>`
   background-color: ${({ theme, pressed }) =>
-    pressed ? theme.primary.surface : "transparent"};
+    pressed ? theme.contrast[10] : "transparent"};
   border-color: transparent;
   border-width: 0;
 

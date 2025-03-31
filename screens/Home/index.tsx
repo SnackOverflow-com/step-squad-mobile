@@ -1,8 +1,7 @@
 import SafeAreaWrapper from "@/components/SafeAreaWrapper";
 import { View } from "react-native";
 import styled from "styled-components/native";
-import { BaseText } from "@/components/ui";
-import { useUser } from "@/hooks";
+import Header from "./Header";
 
 const Container = styled(View)`
   flex: 1;
@@ -11,14 +10,10 @@ const Container = styled(View)`
 `;
 
 const HomeScreen = () => {
-  const { user, isLoading, error } = useUser();
-
-  console.log("user", user);
-
   return (
     <SafeAreaWrapper>
       <Container>
-        <BaseText>Home</BaseText>
+        <Header />
       </Container>
     </SafeAreaWrapper>
   );
