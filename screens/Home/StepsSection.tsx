@@ -60,7 +60,7 @@ const StepsSection = () => {
         <CircleChart
           value={currentSteps}
           maxValue={stepGoal}
-          strokeWidth={10}
+          strokeWidth={16}
           content={renderChartContent()}
         />
       </ChartContainer>

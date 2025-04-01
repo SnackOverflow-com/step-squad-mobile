@@ -3,12 +3,13 @@ import { View } from "react-native";
 import styled from "styled-components/native";
 import Header from "./Header";
 import StepsSection from "./StepsSection";
+import OverviewSection from "./OverviewSection";
 import HistorySection from "./HistorySection";
 
 const Container = styled(View)`
   flex: 1;
   padding: 16px;
-  gap: 8px;
+  gap: 16px;
 `;
 
 const HomeScreen = () => {
@@ -20,6 +21,8 @@ const HomeScreen = () => {
         <HistorySection />
 
         <StepsSection />
+
+        <OverviewSection />
       </Container>
     </SafeAreaWrapper>
   );

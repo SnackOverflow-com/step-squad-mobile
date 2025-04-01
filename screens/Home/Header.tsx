@@ -1,5 +1,5 @@
 import React from "react";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 
 import { BaseText, Button } from "@/components/ui";
 import { useUser } from "@/hooks";
