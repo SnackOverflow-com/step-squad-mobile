@@ -1,5 +1,11 @@
 import React from "react";
-import { View, Pressable, Linking, ActivityIndicator } from "react-native";
+import {
+  View,
+  Pressable,
+  Linking,
+  ActivityIndicator,
+  ScrollView,
+} from "react-native";
 import { Link } from "expo-router";
 import styled from "styled-components/native";
 import { DefaultTheme } from "styled-components/native";
@@ -26,7 +32,7 @@ const registerSchema = z.object({
 
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
-const Container = styled(View)`
+const Container = styled(ScrollView)`
   flex: 1;
   padding: 16px;
   gap: 16px;

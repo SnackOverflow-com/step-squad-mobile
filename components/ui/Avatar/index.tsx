@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef, useImperativeHandle, useRef } from "react";
 import { Pressable, View } from "react-native";
 import styled from "styled-components/native";
 import { DefaultTheme } from "styled-components";
@@ -31,15 +31,55 @@ const OnlineIndicator = styled(View)`
   background-color: ${({ theme }: { theme: DefaultTheme }) => theme.success};
 `;
 
-const Avatar = ({ name, isOnline }: { name: string; isOnline?: boolean }) => {
-  return (
-    <Container>
-      <StyledBaseText size="s" fontWeight="700">
-        {name.charAt(0)}
-      </StyledBaseText>
-      {isOnline && <OnlineIndicator />}
-    </Container>
-  );
-};
+interface AvatarProps {
+  name: string;
+  isOnline?: boolean;
+  onPress?: () => void;
+}
+
+export interface AvatarRef {
+  measurePosition: () => Promise<{
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  } | null>;
+}
+
+const Avatar = forwardRef<AvatarRef, AvatarProps>(
+  ({ name, isOnline, onPress }, ref) => {
+    const containerRef = useRef<View>(null);
+
+    useImperativeHandle(ref, () => ({
+      measurePosition: () => {
+        return new Promise((resolve) => {
+          if (containerRef.current) {
+            containerRef.current.measure(
+              (x, y, width, height, pageX, pageY) => {
+                resolve({
+                  x: pageX,
+                  y: pageY,
+                  width,
+                  height,
+                });
+              }
+            );
+          } else {
+            resolve(null);
+          }
+        });
+      },
+    }));
+
+    return (
+      <Container ref={containerRef} onPress={onPress}>
+        <StyledBaseText size="s" fontWeight="700">
+          {name.charAt(0)}
+        </StyledBaseText>
+        {isOnline && <OnlineIndicator />}
+      </Container>
+    );
+  }
+);
 
 export default Avatar;

@@ -13,6 +13,18 @@ const messages = defineMessages({
     id: "home.stepGoal",
     defaultMessage: "Step goal: {goal}",
   },
+  profile: {
+    id: "home.profile",
+    defaultMessage: "My profile",
+  },
+  settings: {
+    id: "home.settings",
+    defaultMessage: "Settings",
+  },
+  logout: {
+    id: "home.logout",
+    defaultMessage: "Logout",
+  },
 });
 
 export default messages;
