@@ -1,13 +1,13 @@
 import React from "react";
 import { View } from "react-native";
 
-import { BaseText, Button } from "@/components/ui";
+import { BaseText } from "@/components/ui";
 import { useUser } from "@/hooks";
 import { FormattedDate, useIntl } from "react-intl";
 import messages from "./messages";
 import styled from "styled-components/native";
-import { BellIcon } from "lucide-react-native";
 import { DefaultTheme } from "styled-components";
+import Avatar from "@/components/ui/Avatar";
 const Container = styled(View)`
   flex-direction: row;
   justify-content: space-between;
@@ -22,15 +22,6 @@ const NotificationContainer = styled(View)`
 
 const StyledBaseText = styled(BaseText)`
   color: ${({ theme }: { theme: DefaultTheme }) => theme.textSecondary};
-`;
-
-const StyledBellIcon = styled(BellIcon)`
-  color: ${({ theme }: { theme: DefaultTheme }) => theme.text};
-`;
-
-const StyledButton = styled(Button)`
-  padding: 6px;
-  border-radius: 8px;
 `;
 
 const Header = () => {
@@ -53,9 +44,7 @@ const Header = () => {
           />
         </StyledBaseText>
 
-        <StyledButton variant="ghost" size="s">
-          <StyledBellIcon />
-        </StyledButton>
+        <Avatar name={user?.firstName || ""} isOnline={true} />
       </NotificationContainer>
     </Container>
   );

@@ -116,7 +116,7 @@ export const darkTheme = {
   primary: primaryColors,
   secondary: "#2A5769",
   accent: "#4A93B5",
-  border: "#333333",
+  border: neutralColors[80],
   card: "#1E1E1E",
   error: errorColors,
   success: "#66BB6A",

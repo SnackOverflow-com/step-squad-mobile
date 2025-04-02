@@ -129,5 +129,5 @@ export const getTextColor = ({
 
   return variant === "primary" || variant === "secondary"
     ? theme.neutral[10]
-    : theme.neutral[100];
+    : theme.neutral[10];
 };
