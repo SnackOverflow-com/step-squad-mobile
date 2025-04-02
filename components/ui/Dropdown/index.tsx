@@ -20,7 +20,6 @@ import {
 } from "react-native";
 import styled from "styled-components/native";
 import { DefaultTheme } from "styled-components";
-import { ThemeContext } from "styled-components";
 
 import BaseText from "../BaseText";
 import { useThemeContext } from "@/hooks";
@@ -28,6 +27,8 @@ import { useThemeContext } from "@/hooks";
 const DropdownContainer = styled(View)`
   min-width: 180px;
   background-color: ${({ theme }: { theme: DefaultTheme }) => theme.background};
+  border: 1px solid
+    ${({ theme }: { theme: DefaultTheme }) => theme.contrast[20]};
   display: flex;
   gap: 4px;
   padding: 8px;

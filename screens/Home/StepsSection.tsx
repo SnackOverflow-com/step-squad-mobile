@@ -10,7 +10,6 @@ const Container = styled(View)`
   width: 100%;
   border-radius: 16px;
   background-color: ${({ theme }: { theme: DefaultTheme }) => theme.card};
-  padding: 20px;
 `;
 
 const ChartContainer = styled(View)`
@@ -18,7 +17,6 @@ const ChartContainer = styled(View)`
   justify-content: center;
   margin-bottom: 16px;
   width: 100%;
-  height: 100%;
   align-self: center;
   max-width: 300px;
 `;

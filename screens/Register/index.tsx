@@ -238,7 +238,7 @@ const RegisterScreen = () => {
           )}
         </Button>
 
-        <Pressable style={{ alignItems: "center" }}>
+        <Pressable style={{ alignItems: "center", marginTop: 16 }}>
           <BaseText size="xs">
             {formatMessage(messages.alreadyHaveAccount, {
               link: (chunk) => (

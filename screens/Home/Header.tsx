@@ -1,11 +1,12 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View } from "react-native";
 import styled from "styled-components/native";
 import { DefaultTheme } from "styled-components";
 import { FormattedDate, useIntl } from "react-intl";
+import { useRouter } from "expo-router";
 
 import { BaseText, Dropdown } from "@/components/ui";
-import { useUser } from "@/hooks";
+import { useAuth, useUser } from "@/hooks";
 import messages from "./messages";
 import Avatar from "@/components/ui/Avatar";
 import { LogOutIcon, UserIcon } from "lucide-react-native";
@@ -27,27 +28,6 @@ const StyledBaseText = styled(BaseText)`
   color: ${({ theme }: { theme: DefaultTheme }) => theme.textSecondary};
 `;
 
-// Custom styled components for dropdown items
-const CustomItemContainer = styled(View)`
-  flex-direction: row;
-  align-items: center;
-  padding: 4px 0;
-`;
-
-const IconPlaceholder = styled(View)`
-  width: 16px;
-  height: 16px;
-  border-radius: 8px;
-  background-color: ${({
-    theme,
-    color,
-  }: {
-    theme: DefaultTheme;
-    color: string;
-  }) => color};
-  margin-right: 8px;
-`;
-
 const StyledUserIcon = styled(UserIcon)`
   color: ${({ theme }: { theme: DefaultTheme }) => theme.text};
 `;
@@ -59,6 +39,13 @@ const StyledLogoutIcon = styled(LogOutIcon)`
 const Header = () => {
   const { user } = useUser();
   const { formatMessage } = useIntl();
+  const { logout } = useAuth();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await logout();
+    router.replace("/(auth)/login");
+  };
 
   return (
     <Container>
@@ -93,7 +80,7 @@ const Header = () => {
           <Dropdown.Item
             label={formatMessage(messages.logout)}
             icon={<StyledLogoutIcon />}
-            onPress={() => console.log("Logout")}
+            onPress={() => handleLogout()}
           />
         </Dropdown>
       </NotificationContainer>

@@ -1,9 +1,8 @@
 import SafeAreaWrapper from "@/components/SafeAreaWrapper";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 import styled from "styled-components/native";
 import Header from "./Header";
 import StepsSection from "./StepsSection";
-import OverviewSection from "./OverviewSection";
 import HistorySection from "./HistorySection";
 
 const Container = styled(View)`
@@ -15,15 +14,15 @@ const Container = styled(View)`
 const HomeScreen = () => {
   return (
     <SafeAreaWrapper>
-      <Container>
-        <Header />
+      <ScrollView>
+        <Container>
+          <Header />
 
-        <HistorySection />
+          <HistorySection />
 
-        <StepsSection />
-
-        <OverviewSection />
-      </Container>
+          <StepsSection />
+        </Container>
+      </ScrollView>
     </SafeAreaWrapper>
   );
 };
