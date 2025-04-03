@@ -24,14 +24,24 @@ export const messages = {
     defaultMessage: "Age",
   },
   gender: {
-    id: "profile.gender",
+    id: "profile.gender.ts",
     defaultMessage: "Gender",
     male: {
-      id: "profile.geneder",
+      id: "profile.gender.male",
       defaultMessage: "Male",
     },
-    female: "Female",
-    unspecified: "Unspecified",
+    female: {
+      id: "profile.gender.female",
+      defaultMessage: "Female",
+    },
+    unspecified: {
+      id: "profile.gender.unspecified",
+      defaultMessage: "Unspecified",
+    },
+  },
+  toggleTheme: {
+    id: "profile.toggleTheme",
+    defaultMessage: "Toggle theme"
   },
   save: {
     id: "profile.save",
