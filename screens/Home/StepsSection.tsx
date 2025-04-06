@@ -76,8 +76,9 @@ const StepsSection = () => {
       </Container>
     );
   }
-
-  if (isPedometerAvailable !== "true") {
+  {
+  }
+  if (isPedometerAvailable !== "granted") {
     return (
       <Container
         style={{
