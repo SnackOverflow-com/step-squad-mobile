@@ -27,7 +27,8 @@
       "permissions": [
         "android.permission.ACTIVITY_RECOGNITION",
         "android.permission.BODY_SENSORS"
-      ]
+      ],
+      "package": "com.mdboss.stepsquadmobile"
     },
     "web": {
       "bundler": "metro",
@@ -49,24 +50,23 @@
         "expo-font",
         {
           "fonts": [
-            {
-              "asset": "./assets/fonts/Manrope-Regular.ttf",
-              "fontFamily": "ManropeRegular"
-            },
-            {
-              "asset": "./assets/fonts/Manrope-SemiBold.ttf",
-              "fontFamily": "ManropeSemiBold"
-            },
-            {
-              "asset": "./assets/fonts/Manrope-Bold.ttf",
-              "fontFamily": "ManropeBold"
-            }
+            "./assets/fonts/Manrope-Regular.ttf",
+            "./assets/fonts/Manrope-SemiBold.ttf",
+            "./assets/fonts/Manrope-Bold.ttf"
           ]
         }
       ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "aeb9dd2d-a27d-4510-8d4c-19f90a070a97"
+      }
     }
   }
 }
