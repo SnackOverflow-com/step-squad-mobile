@@ -1,15 +1,16 @@
 import React from "react";
-import { View } from "react-native";
-import styled, { DefaultTheme } from "styled-components/native";
+import { View, ActivityIndicator, StyleSheet } from "react-native";
+import styled from "styled-components/native";
 import { useIntl } from "react-intl";
+import { useTheme } from "styled-components/native";
 
 import { BaseText, CircleChart } from "@/components/ui";
+import { useStepCounter } from "@/hooks";
 import messages from "./messages";
 
 const Container = styled(View)`
   width: 100%;
   border-radius: 16px;
-  background-color: ${({ theme }: { theme: DefaultTheme }) => theme.card};
 `;
 
 const ChartContainer = styled(View)`
@@ -26,37 +27,78 @@ const ChartContent = styled(View)`
   justify-content: center;
 `;
 
-const StepValue = styled(BaseText)`
-  color: ${({ theme }: { theme: DefaultTheme }) => theme.text};
-`;
+const StepValue = styled(BaseText)``;
 
-const StepGoal = styled(BaseText)`
-  color: ${({ theme }: { theme: DefaultTheme }) => theme.textSecondary};
+const StepGoal = styled(BaseText)``;
+
+const InfoText = styled(BaseText)`
+  text-align: center;
+  margin: 16px;
 `;
 
 const StepsSection = () => {
+  const theme = useTheme();
   const { formatMessage } = useIntl();
-  const currentSteps = 10189; // Example value
-  const stepGoal = 20000; // Example goal
+  const { currentStepCount, stepGoal, isPedometerAvailable } = useStepCounter();
 
-  // Render the content inside the chart
   const renderChartContent = () => (
     <ChartContent>
-      <StepValue size="xxl" fontWeight="700">
-        {currentSteps.toLocaleString()}
+      <StepValue size="xxl" fontWeight="700" style={{ color: theme.text }}>
+        {currentStepCount.toLocaleString()}
       </StepValue>
 
-      <StepGoal size="s">
+      <StepGoal size="s" style={{ color: theme.textSecondary }}>
         {formatMessage(messages.stepGoal, { goal: stepGoal.toLocaleString() })}
       </StepGoal>
     </ChartContent>
   );
 
+  if (isPedometerAvailable === "checking") {
+    return (
+      <Container
+        style={{
+          backgroundColor: theme.card,
+          padding: 20,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <ActivityIndicator
+          size="large"
+          color={theme.primary.main || theme.text}
+        />
+        <InfoText
+          size="m"
+          style={{ color: theme.textSecondary, marginTop: 10 }}
+        >
+          Checking pedometer availability...
+        </InfoText>
+      </Container>
+    );
+  }
+
+  if (isPedometerAvailable !== "true") {
+    return (
+      <Container
+        style={{
+          backgroundColor: theme.card,
+          padding: 20,
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <InfoText size="m" style={{ color: theme.error }}>
+          Pedometer is not available or permission was denied.
+        </InfoText>
+      </Container>
+    );
+  }
+
   return (
-    <Container>
+    <Container style={{ backgroundColor: theme.card }}>
       <ChartContainer>
         <CircleChart
-          value={currentSteps}
+          value={currentStepCount}
           maxValue={stepGoal}
           strokeWidth={16}
           content={renderChartContent()}

@@ -12,3 +12,4 @@ export {
 } from "./useThemeContext";
 export { useAuth, AuthProvider } from "./AuthContext";
 export { useUser } from "./useUser";
+export { useStepCounter } from "./useStepCounter";

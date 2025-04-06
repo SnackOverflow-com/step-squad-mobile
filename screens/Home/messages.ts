@@ -13,6 +13,10 @@ const messages = defineMessages({
     id: "home.stepGoal",
     defaultMessage: "Step goal: {goal}",
   },
+  requestPermission: {
+    id: "home.requestPermission",
+    defaultMessage: "Request step counting permission",
+  },
   profile: {
     id: "home.profile",
     defaultMessage: "My profile",
