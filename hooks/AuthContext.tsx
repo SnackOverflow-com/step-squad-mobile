@@ -119,19 +119,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
-  // Function to handle logout
-  const logout = async () => {
-    try {
-      await apiLogoutUser();
-      setIsAuthenticated(false);
-      // Clear user data from cache
-      queryClient.removeQueries({ queryKey: ["currentUser"] });
-    } catch (error) {
-      console.error("Logout error:", error);
-      throw error;
-    }
-  };
-
   // Function to handle registration
   const register = async (userRegisterRequest: UserRegisterRequest) => {
     try {
