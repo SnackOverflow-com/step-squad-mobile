@@ -3,3 +3,6 @@ export { default as TextInput } from "./TextInput";
 export { default as BaseText } from "./BaseText";
 export * from "./IconSymbol";
 export { default as TabBarBackground } from "./TabBarBackground";
+export { default as CircleChart } from "./CircleChart";
+export { default as Avatar } from "./Avatar";
+export { default as Dropdown } from "./Dropdown";

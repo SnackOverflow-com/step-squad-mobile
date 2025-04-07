@@ -1,8 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import apiClient from "./client";
-import {UserRegisterRequest} from "@/types/user/user-register-request";
-import {UserLoginRequest} from "@/types/user/user-login-request";
-import {UserLoginResponse} from "@/types/user/user-login-response";
+import { UserRegisterRequest } from "@/types/user/user-register-request";
+import { UserLoginRequest } from "@/types/user/user-login-request";
+import { UserLoginResponse } from "@/types/user/user-login-response";
 
 /**
  * Login user with email and password
@@ -10,23 +10,23 @@ import {UserLoginResponse} from "@/types/user/user-login-response";
  * @returns A promise with the login response data
  */
 export const loginUser = async (
-    credentials: UserLoginRequest
+  credentials: UserLoginRequest
 ): Promise<UserLoginResponse> => {
-    try {
-        // This is a placeholder - replace with your actual API endpoint
-        const response = await apiClient.post<UserLoginResponse>(
-            "/auth/login",
-            credentials
-        );
+  try {
+    // This is a placeholder - replace with your actual API endpoint
+    const response = await apiClient.post<UserLoginResponse>(
+      "/auth/login",
+      credentials
+    );
 
-        // Store the auth token in AsyncStorage
-        await AsyncStorage.setItem("auth_token", response.data.token);
+    // Store the auth token in AsyncStorage
+    await AsyncStorage.setItem("auth_token", response.data.token);
 
-        return response.data;
-    } catch (error) {
-        // Re-throw the error for the caller to handle
-        throw error;
-    }
+    return response.data;
+  } catch (error) {
+    // Re-throw the error for the caller to handle
+    throw error;
+  }
 };
 
 /**
@@ -35,51 +35,67 @@ export const loginUser = async (
  * @returns A promise with the registration response data
  */
 export const registerUser = async (
-    userRegisterRequest: UserRegisterRequest
+  userRegisterRequest: UserRegisterRequest
 ): Promise<UserLoginResponse> => {
-    try {
-        // This is a placeholder - replace with your actual API endpoint
-        const response = await apiClient.post<UserLoginResponse>(
-            "/auth/register",
-            userRegisterRequest
-        );
+  try {
+    // This is a placeholder - replace with your actual API endpoint
+    const response = await apiClient.post<UserLoginResponse>(
+      "/auth/register",
+      userRegisterRequest
+    );
 
-        // Store the auth token in AsyncStorage
-        await AsyncStorage.setItem("auth_token", response.data.token);
+    // Store the auth token in AsyncStorage
+    await AsyncStorage.setItem("auth_token", response.data.token);
 
-        return response.data;
-    } catch (error) {
-        // Re-throw the error for the caller to handle
-        throw error;
-    }
+    return response.data;
+  } catch (error) {
+    // Re-throw the error for the caller to handle
+    throw error;
+  }
 };
 
 /**
  * Log out the current user
  */
 export const logoutUser = async (): Promise<void> => {
-    try {
-        // Call logout endpoint if needed
-        // await apiClient.post('/auth/logout');
+  try {
+    // Call logout endpoint if needed
+    // await apiClient.post('/auth/logout');
 
-        // Clear the auth token
-        await AsyncStorage.removeItem("auth_token");
-    } catch (error) {
-        console.error("Logout error:", error);
-        throw error;
-    }
+    // Clear the auth token
+    await AsyncStorage.removeItem("auth_token");
+  } catch (error) {
+    console.error("Logout error:", error);
+    throw error;
+  }
 };
 
 /**
  * Check if the user is already authenticated
- * @returns A boolean indicating if the user has a stored token
+ * @returns A boolean indicating if the user has a valid token
  */
 export const checkAuth = async (): Promise<boolean> => {
-    try {
-        const token = await AsyncStorage.getItem("auth_token");
-        return !!token;
-    } catch (error) {
-        console.error("Auth check error:", error);
-        return false;
-    }
+  try {
+    // Use our JWT utility to verify if the token exists and is not expired
+    return await verifyStoredToken();
+  } catch (error) {
+    console.error("Auth check error:", error);
+    return false;
+  }
+};
+
+/**
+ * Fetch the current user data
+ * @returns The current user data
+ */
+export const fetchCurrentUser = async (): Promise<User> => {
+  try {
+    const response = await apiClient.get<User>("/user/me");
+    return response.data;
+  } catch (error) {
+    console.error("Fetch current user error:", error);
+    // The 401 handling is already done in the apiClient interceptor
+    // which will trigger the auth events system
+    throw error;
+  }
 };
