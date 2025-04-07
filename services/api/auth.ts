@@ -1,8 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import apiClient from "./client";
-import { UserRegisterRequest } from "@/types/user/user-register-request";
-import { UserLoginRequest } from "@/types/user/user-login-request";
-import { UserLoginResponse } from "@/types/user/user-login-response";
+import {UserRegisterRequest} from "@/types/user/user-register-request";
+import {UserLoginRequest} from "@/types/user/user-login-request";
+import {UserLoginResponse} from "@/types/user/user-login-response";
+import {verifyStoredToken} from "@/services/utils/jwt";
 
 /**
  * Login user with email and password
@@ -81,21 +82,5 @@ export const checkAuth = async (): Promise<boolean> => {
   } catch (error) {
     console.error("Auth check error:", error);
     return false;
-  }
-};
-
-/**
- * Fetch the current user data
- * @returns The current user data
- */
-export const fetchCurrentUser = async (): Promise<User> => {
-  try {
-    const response = await apiClient.get<User>("/user/me");
-    return response.data;
-  } catch (error) {
-    console.error("Fetch current user error:", error);
-    // The 401 handling is already done in the apiClient interceptor
-    // which will trigger the auth events system
-    throw error;
   }
 };

@@ -1,22 +1,22 @@
 import React, {
-  ReactNode,
-  useRef,
-  useState,
-  createContext,
-  useContext,
   Children,
   cloneElement,
+  createContext,
   isValidElement,
+  ReactNode,
+  useContext,
+  useRef,
+  useState,
 } from "react";
 import {
-  Pressable,
-  View,
-  Modal,
   Dimensions,
   findNodeHandle,
-  UIManager,
-  StatusBar,
+  Modal,
   Platform,
+  Pressable,
+  StatusBar,
+  UIManager,
+  View,
 } from "react-native";
 import styled from "styled-components/native";
 import { DefaultTheme } from "styled-components";

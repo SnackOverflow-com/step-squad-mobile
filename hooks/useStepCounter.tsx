@@ -1,36 +1,48 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Pedometer } from "expo-sensors";
 import { Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getActivity, updateActivity } from "@/services/api/activity";
+import { ActivityUpdateRequest } from "@/types/activity/activity-update-request";
 
-const STEP_GOAL = 10000; // Keep the hardcoded step goal for the UI
 const ASYNC_STORAGE_STEP_KEY = "@StepSquad:currentStepCount"; // Define a key for storage
 
 interface UseStepCounterResult {
   currentStepCount: number;
-  isPedometerAvailable: string; // Keep this name, but it now holds 'checking', 'granted', 'denied', 'unavailable'
+  isPedometerAvailable: string; // 'checking', 'granted', 'denied', 'unavailable'
   stepGoal: number;
 }
 
 export const useStepCounter = (): UseStepCounterResult => {
-  // Use a more descriptive status: 'checking', 'unavailable', 'denied', 'granted'
   const [pedometerStatus, setPedometerStatus] = useState<string>("checking");
-  // This state now holds the calculated total steps for display and savingg
   const [currentStepCount, setCurrentStepCount] = useState(0);
-  const [isInitialLoadComplete, setIsInitialLoadComplete] = useState(false); // Track initial load
+  const [isInitialLoadComplete, setIsInitialLoadComplete] = useState(false);
+  const [activity, setActivity] = useState<any>(null); // State to hold activity data
 
-  // Refs to manage the calculation without causing extra renders
-  const loadedStepsRef = useRef<number>(0); // Stores steps loaded from AsyncStorage
-  const initialWatchCountRef = useRef<number | null>(null); // Stores the first step count from watch
+  const loadedStepsRef = useRef<number>(0);
+  const initialWatchCountRef = useRef<number | null>(null);
 
   console.log(`[${Platform.OS}] useStepCounter Hook Initialized`);
+
+  // Fetch activity data on mount
+  useEffect(() => {
+    const fetchActivity = async () => {
+      try {
+        const activityData = await getActivity();
+        setActivity(activityData); // Store the activity data in state
+      } catch (error) {
+        console.error("Failed to fetch activity:", error);
+      }
+    };
+
+    fetchActivity();
+  }, []);
 
   useEffect(() => {
     console.log(`[${Platform.OS}] useStepCounter Effect Mount`);
     let subscription: { remove: () => void } | null = null;
 
     const initializeAndSubscribe = async () => {
-      // --- Load initial steps from AsyncStorage ---
       try {
         console.log(
           `[${Platform.OS}] Attempting to load steps from AsyncStorage...`
@@ -42,24 +54,16 @@ export const useStepCounter = (): UseStepCounterResult => {
             console.log(
               `[${Platform.OS}] Loaded steps from storage: ${parsedSteps}`
             );
-            // Store in ref and set initial state
             loadedStepsRef.current = parsedSteps;
             setCurrentStepCount(parsedSteps);
-          } else {
-            console.log(
-              `[${Platform.OS}] Invalid step data found in storage: ${storedSteps}`
-            );
           }
-        } else {
-          console.log(`[${Platform.OS}] No steps found in storage.`);
         }
       } catch (error) {
         console.error("Failed to load steps from AsyncStorage:", error);
       }
-      // Reset watch baseline on each init
+
       initialWatchCountRef.current = null;
-      setIsInitialLoadComplete(true); // Mark initial load as complete
-      // --- End loading steps ---
+      setIsInitialLoadComplete(true);
 
       console.log(`[${Platform.OS}] subscribe: Requesting permissions...`);
       const { status } = await Pedometer.requestPermissionsAsync();
@@ -67,11 +71,9 @@ export const useStepCounter = (): UseStepCounterResult => {
 
       if (status !== "granted") {
         setPedometerStatus("denied");
-        console.log(`[${Platform.OS}] subscribe: Permission denied.`);
-        return; // Exit if permission not granted
+        return;
       }
 
-      // Permission granted, now check hardware availability
       console.log(
         `[${Platform.OS}] subscribe: Checking hardware availability...`
       );
@@ -81,12 +83,11 @@ export const useStepCounter = (): UseStepCounterResult => {
       );
 
       if (isHardwareAvailable) {
-        setPedometerStatus("granted"); // Both permission and hardware are ok
+        setPedometerStatus("granted");
         console.log(
           `[${Platform.OS}] subscribe: Starting Pedometer.watchStepCount...`
         );
 
-        // Watch for future steps
         subscription = Pedometer.watchStepCount((result) => {
           const watchResultSteps = result.steps;
           console.log(
@@ -94,85 +95,52 @@ export const useStepCounter = (): UseStepCounterResult => {
           );
 
           if (initialWatchCountRef.current === null) {
-            // First update from the watch this session
             console.log(
               `[${Platform.OS}] Setting initial watch count baseline: ${watchResultSteps}`
             );
             initialWatchCountRef.current = watchResultSteps;
-            // Don't update state here, initial state is already set from loadedStepsRef
           } else {
-            // Subsequent updates: calculate delta and add to loaded steps
             const deltaSinceWatchStarted =
               watchResultSteps - initialWatchCountRef.current;
+            const calculatedTotalSteps =
+              loadedStepsRef.current + deltaSinceWatchStarted;
 
             if (deltaSinceWatchStarted < 0) {
               console.warn(
-                `[${Platform.OS}] Negative step delta detected (${deltaSinceWatchStarted}). This might happen after a device reboot or sensor reset. Recalculating baseline.`
+                `[${Platform.OS}] Negative step delta detected. Recalculating...`
               );
-              // Option 1: Reset baseline and assume current watch steps are the new delta since load
-              // loadedStepsRef.current = currentStepCount; // Update loaded ref to the last known good total
-              // initialWatchCountRef.current = watchResultSteps;
-              // setCurrentStepCount(loadedStepsRef.current); // Or maybe loadedStepsRef.current + watchResultSteps? Needs thought.
-
-              // Option 2: A simpler approach might be to just use the new watch value if it's larger than stored
-              // This isn't ideal as it might lose steps if watch count reset lower than stored.
-              // For now, let's just recalculate based on current state
-
-              const newTotalSteps = loadedStepsRef.current + watchResultSteps; // Or just watchResultSteps?
-              console.log(
-                `[${Platform.OS}] Attempting recovery calculation. New total might be inaccurate: ${newTotalSteps}`
-              );
-              // Let's stick to the original calculation for now, but log the warning
-              const calculatedTotalSteps =
-                loadedStepsRef.current + deltaSinceWatchStarted;
-              console.log(
-                `[${Platform.OS}] Calculated delta: ${deltaSinceWatchStarted}. New total steps: ${calculatedTotalSteps} (Loaded: ${loadedStepsRef.current})`
-              );
-              // Avoid setting negative steps if delta calculation goes wrong
               setCurrentStepCount(
                 Math.max(loadedStepsRef.current, calculatedTotalSteps)
               );
             } else {
-              const calculatedTotalSteps =
-                loadedStepsRef.current + deltaSinceWatchStarted;
               console.log(
-                `[${Platform.OS}] Calculated delta: ${deltaSinceWatchStarted}. New total steps: ${calculatedTotalSteps} (Loaded: ${loadedStepsRef.current})`
+                `[${Platform.OS}] Calculated delta: ${deltaSinceWatchStarted}. New total steps: ${calculatedTotalSteps}`
               );
               setCurrentStepCount(calculatedTotalSteps);
             }
           }
         });
       } else {
-        setPedometerStatus("unavailable"); // Hardware not available
-        console.log(
-          `[${Platform.OS}] subscribe: Pedometer hardware not available.`
-        );
+        setPedometerStatus("unavailable");
       }
     };
 
     initializeAndSubscribe();
 
-    // Cleanup function
     return () => {
       console.log(`[${Platform.OS}] useStepCounter Effect Cleanup`);
       if (subscription) {
-        console.log(
-          `[${Platform.OS}] Cleanup: Removing Pedometer subscription.`
-        );
         subscription.remove();
-        subscription = null; // Help GC
+        subscription = null;
       }
     };
   }, []);
 
-  // Effect for saving steps to AsyncStorage when they change
+  // Save steps to AsyncStorage when they change
   useEffect(() => {
-    // Only save after the initial load is complete
-    // Save 0 as well, in case steps were reset
     if (isInitialLoadComplete) {
       const saveSteps = async () => {
         try {
-          // Save the calculated total steps
           console.log(
             `[${Platform.OS}] Saving calculated steps to AsyncStorage: ${currentStepCount}`
           );
@@ -186,10 +154,32 @@ export const useStepCounter = (): UseStepCounterResult => {
       };
       saveSteps();
     }
-    // Depend only on the final calculated count and load flag
   }, [currentStepCount, isInitialLoadComplete]);
 
-  // Log whenever the relevant state values change
+  // Update activity when currentStepCount or activity changes
+  useEffect(() => {
+    if (activity && isInitialLoadComplete) {
+      const activityUpdateRequest: ActivityUpdateRequest = {
+        id: activity.id,
+        date: activity.date,
+        quantity: currentStepCount,
+      };
+
+      const update = async () => {
+        try {
+          await updateActivity(activityUpdateRequest);
+          console.log(
+            `[${Platform.OS}] Activity updated with steps: ${currentStepCount}`
+          );
+        } catch (error) {
+          console.error("Failed to update activity:", error);
+        }
+      };
+      update();
+    }
+  }, [currentStepCount, activity, isInitialLoadComplete]);
+
+  // Log state changes
   useEffect(() => {
     console.log(
       `[${Platform.OS}] State Change: pedometerStatus = ${pedometerStatus}`
@@ -203,10 +193,9 @@ export const useStepCounter = (): UseStepCounterResult => {
   }, [currentStepCount]);
 
   return {
-    // Let the consumer decide how to handle the status string
-    isPedometerAvailable: pedometerStatus, // Consumers can check for 'granted', 'denied' etc.
-    currentStepCount, // Return the calculated total
-    stepGoal: STEP_GOAL,
+    isPedometerAvailable: pedometerStatus,
+    currentStepCount,
+    stepGoal: activity?.goal ?? 0, // Default to 0 if activity isn't loaded yet
   };
 };
 

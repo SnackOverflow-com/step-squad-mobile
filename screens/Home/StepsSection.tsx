@@ -1,8 +1,7 @@
 import React from "react";
-import { View, ActivityIndicator, StyleSheet } from "react-native";
-import styled from "styled-components/native";
+import { ActivityIndicator, View } from "react-native";
+import styled, { useTheme } from "styled-components/native";
 import { useIntl } from "react-intl";
-import { useTheme } from "styled-components/native";
 
 import { BaseText, CircleChart } from "@/components/ui";
 import { useStepCounter } from "@/hooks";
@@ -76,8 +75,7 @@ const StepsSection = () => {
       </Container>
     );
   }
-  {
-  }
+
   if (isPedometerAvailable !== "granted") {
     return (
       <Container
