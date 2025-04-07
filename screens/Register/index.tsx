@@ -21,6 +21,7 @@ import BaseText from "@/components/ui/BaseText";
 import SafeAreaWrapper from "@/components/SafeAreaWrapper";
 import Header from "./Header";
 import { messages } from "./messages";
+import { UserRegisterRequest } from "@/types/user/user-register-request";
 
 // Form validation schema
 const registerSchema = z.object({
@@ -85,10 +86,10 @@ const RegisterScreen = () => {
 
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const onSubmit = async (formData: RegisterFormValues) => {
+  const onSubmit = async (userRegisterRequest: UserRegisterRequest) => {
     try {
       setIsLoading(true);
-      await register(formData);
+      await register(userRegisterRequest);
       // No need to navigate - AuthContext will handle redirection
     } catch (error: any) {
       // Handle specific errors from the API

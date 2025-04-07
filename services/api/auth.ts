@@ -1,32 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import apiClient from "./client";
-import { verifyStoredToken } from "@/services/utils/jwt";
-
-export interface LoginCredentials {
-  email: string;
-  password: string;
-}
-
-export interface RegisterCredentials {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-}
-
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  firstName?: string;
-  lastName?: string;
-  // Add any other user properties that might be returned by the API
-}
-
-export interface LoginResponse {
-  token: string;
-  user: User;
-}
+import { UserRegisterRequest } from "@/types/user/user-register-request";
+import { UserLoginRequest } from "@/types/user/user-login-request";
+import { UserLoginResponse } from "@/types/user/user-login-response";
 
 /**
  * Login user with email and password
@@ -34,11 +10,11 @@ export interface LoginResponse {
  * @returns A promise with the login response data
  */
 export const loginUser = async (
-  credentials: LoginCredentials
-): Promise<LoginResponse> => {
+  credentials: UserLoginRequest
+): Promise<UserLoginResponse> => {
   try {
     // This is a placeholder - replace with your actual API endpoint
-    const response = await apiClient.post<LoginResponse>(
+    const response = await apiClient.post<UserLoginResponse>(
       "/auth/login",
       credentials
     );
@@ -55,17 +31,17 @@ export const loginUser = async (
 
 /**
  * Register a new user
- * @param credentials The user registration credentials
+ * @param userRegisterRequest The user registration request
  * @returns A promise with the registration response data
  */
 export const registerUser = async (
-  credentials: RegisterCredentials
-): Promise<LoginResponse> => {
+  userRegisterRequest: UserRegisterRequest
+): Promise<UserLoginResponse> => {
   try {
     // This is a placeholder - replace with your actual API endpoint
-    const response = await apiClient.post<LoginResponse>(
+    const response = await apiClient.post<UserLoginResponse>(
       "/auth/register",
-      credentials
+      userRegisterRequest
     );
 
     // Store the auth token in AsyncStorage

@@ -8,24 +8,24 @@ import React, {
 } from "react";
 
 import {
+  checkAuth,
   loginUser as apiLoginUser,
   logoutUser as apiLogoutUser,
   registerUser as apiRegisterUser,
-  checkAuth,
-  LoginCredentials,
-  RegisterCredentials,
 } from "@/services/api/auth";
 import { queryClient } from "@/services/queryClient";
 import { authEvents } from "@/services/api/client";
 import { verifyStoredToken } from "@/services/utils/jwt";
+import { UserRegisterRequest } from "@/types/user/user-register-request";
+import { UserLoginRequest } from "@/types/user/user-login-request";
 
 // Define the context type
 interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (credentials: LoginCredentials) => Promise<void>;
+  login: (userLoginRequest: UserLoginRequest) => Promise<void>;
   logout: () => Promise<void>;
-  register: (credentials: RegisterCredentials) => Promise<void>;
+  register: (userRegisterRequest: UserRegisterRequest) => Promise<void>;
   validateSession: () => Promise<boolean>;
 }
 
@@ -94,18 +94,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     const verifyAuth = async () => {
       try {
-        // Use our enhanced checkAuth function that validates token expiration
         const isAuthed = await checkAuth();
         setIsAuthenticated(isAuthed);
-
-        if (isAuthed) {
-          console.log("User authenticated with valid token");
-        } else {
-          console.log("No valid authentication token found");
-        }
       } catch (error) {
         console.error("Auth verification error:", error);
-        setIsAuthenticated(false);
       } finally {
         setIsLoading(false);
       }
@@ -115,9 +107,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   // Function to handle login
-  const login = async (credentials: LoginCredentials) => {
+  const login = async (userLoginRequest: UserLoginRequest) => {
     try {
-      await apiLoginUser(credentials);
+      await apiLoginUser(userLoginRequest);
       setIsAuthenticated(true);
       // Invalidate user query to trigger a refetch when the hook is called
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
@@ -127,10 +119,23 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
-  // Function to handle registration
-  const register = async (credentials: RegisterCredentials) => {
+  // Function to handle logout
+  const logout = async () => {
     try {
-      await apiRegisterUser(credentials);
+      await apiLogoutUser();
+      setIsAuthenticated(false);
+      // Clear user data from cache
+      queryClient.removeQueries({ queryKey: ["currentUser"] });
+    } catch (error) {
+      console.error("Logout error:", error);
+      throw error;
+    }
+  };
+
+  // Function to handle registration
+  const register = async (userRegisterRequest: UserRegisterRequest) => {
+    try {
+      await apiRegisterUser(userRegisterRequest);
       setIsAuthenticated(true);
       // Invalidate user query to trigger a refetch when the hook is called
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
