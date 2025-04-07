@@ -25,7 +25,10 @@ export const updateActivity = async (
   activityUpdateRequest: ActivityUpdateRequest
 ): Promise<Activity> => {
   try {
-    const response = await apiClient.put<Activity>(`/activity`);
+    const response = await apiClient.put<Activity>(
+      `/activity`,
+      activityUpdateRequest
+    );
 
     return response.data;
   } catch (error) {
