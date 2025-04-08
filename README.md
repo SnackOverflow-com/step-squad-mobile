@@ -45,6 +45,27 @@ In the output, you'll find options to open the app in a
 - [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
 - [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
 
+## Setting up Expo Development Build
+
+1. Download the development build apk and install to android (if you dont have permission for the link, hmu):
+
+- Link: https://expo.dev/accounts/mdboss/projects/step-squad-mobile/builds/6efb1b04-c2c0-4332-993b-9b6a79398067
+
+2. Setup the .env file correctly for the backend to connect
+
+- you need to put the url same as the one under the QR code from terminal when you start the app
+
+```
+# For Web
+# EXPO_PUBLIC_API_BASE_URL=http://localhost:8080/api/
+
+# For Android (or whatever ip is displayed in the console)
+EXPO_PUBLIC_API_BASE_URL=http://192.168.48.34:8080/api/
+
+```
+
+3. Scan the QR code and the installed development build app will open.
+
 You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
 ## Code Formatting with Prettier
