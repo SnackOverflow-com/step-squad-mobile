@@ -1,9 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import apiClient from "./client";
-import {UserRegisterRequest} from "@/types/user/user-register-request";
-import {UserLoginRequest} from "@/types/user/user-login-request";
-import {UserLoginResponse} from "@/types/user/user-login-response";
-import {verifyStoredToken} from "@/services/utils/jwt";
+import { UserRegisterRequest } from "@/types/user/user-register-request";
+import { UserLoginRequest } from "@/types/user/user-login-request";
+import { UserLoginResponse } from "@/types/user/user-login-response";
+import { verifyStoredToken } from "../utils/jwt";
 
 /**
  * Login user with email and password

@@ -1,110 +1,61 @@
 import React from "react";
-import { ActivityIndicator, View } from "react-native";
-import styled, { useTheme } from "styled-components/native";
-import { useIntl } from "react-intl";
+import {View} from "react-native";
+import styled, {useTheme} from "styled-components/native";
+import {useIntl} from "react-intl";
 
-import { BaseText, CircleChart } from "@/components/ui";
-import { useStepCounter } from "@/hooks";
+import {BaseText, CircleChart} from "@/components/ui";
+import {useStepCounter} from "@/hooks";
 import messages from "./messages";
 
 const Container = styled(View)`
-  width: 100%;
-  border-radius: 16px;
+    width: 100%;
+    border-radius: 16px;
 `;
 
 const ChartContainer = styled(View)`
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 16px;
-  width: 100%;
-  align-self: center;
-  max-width: 300px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    align-self: center;
+    max-width: 300px;
+    aspect-ratio: 1;
+    margin: 16px 0;
 `;
 
 const ChartContent = styled(View)`
-  align-items: center;
-  justify-content: center;
-`;
-
-const StepValue = styled(BaseText)``;
-
-const StepGoal = styled(BaseText)``;
-
-const InfoText = styled(BaseText)`
-  text-align: center;
-  margin: 16px;
+    align-items: center;
+    justify-content: center;
 `;
 
 const StepsSection = () => {
-  const theme = useTheme();
-  const { formatMessage } = useIntl();
-  const { currentStepCount, stepGoal, isPedometerAvailable } = useStepCounter();
+    const theme = useTheme();
+    const {formatMessage} = useIntl();
+    const {currentStepCount, stepGoal} = useStepCounter();
 
-  const renderChartContent = () => (
-    <ChartContent>
-      <StepValue size="xxl" fontWeight="700" style={{ color: theme.text }}>
-        {currentStepCount.toLocaleString()}
-      </StepValue>
+    const renderChartContent = () => (
+        <ChartContent>
+            <BaseText size="xxl" fontWeight="700" style={{color: theme.text}}>
+                {currentStepCount.toLocaleString()}
+            </BaseText>
 
-      <StepGoal size="s" style={{ color: theme.textSecondary }}>
-        {formatMessage(messages.stepGoal, { goal: stepGoal.toLocaleString() })}
-      </StepGoal>
-    </ChartContent>
-  );
-
-  if (isPedometerAvailable === "checking") {
-    return (
-      <Container
-        style={{
-          backgroundColor: theme.card,
-          padding: 20,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <ActivityIndicator
-          size="large"
-          color={theme.primary.main || theme.text}
-        />
-        <InfoText
-          size="m"
-          style={{ color: theme.textSecondary, marginTop: 10 }}
-        >
-          Checking pedometer availability...
-        </InfoText>
-      </Container>
+            <BaseText size="s" style={{color: theme.textSecondary}}>
+                {formatMessage(messages.stepGoal, {goal: stepGoal.toLocaleString()})}
+            </BaseText>
+        </ChartContent>
     );
-  }
 
-  if (isPedometerAvailable !== "granted") {
     return (
-      <Container
-        style={{
-          backgroundColor: theme.card,
-          padding: 20,
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <InfoText size="m" style={{ color: theme.error }}>
-          Pedometer is not available or permission was denied.
-        </InfoText>
-      </Container>
+        <Container style={{backgroundColor: theme.card}}>
+            <ChartContainer>
+                <CircleChart
+                    value={currentStepCount}
+                    maxValue={stepGoal}
+                    strokeWidth={16}
+                    content={renderChartContent()}
+                />
+            </ChartContainer>
+        </Container>
     );
-  }
-
-  return (
-    <Container style={{ backgroundColor: theme.card }}>
-      <ChartContainer>
-        <CircleChart
-          value={currentStepCount}
-          maxValue={stepGoal}
-          strokeWidth={16}
-          content={renderChartContent()}
-        />
-      </ChartContainer>
-    </Container>
-  );
 };
 
 export default StepsSection;
