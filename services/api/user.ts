@@ -1,6 +1,6 @@
-import {User} from "@/types/user/user";
+import { User } from "@/types/user/user";
 import apiClient from "@/services/api/client";
-import {UserUpdateRequest} from "@/types/user/user-update-request";
+import { UserUpdateRequest } from "@/types/user/user-update-request";
 
 /**
  * Fetch the current user data

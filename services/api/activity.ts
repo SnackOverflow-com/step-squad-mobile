@@ -1,6 +1,6 @@
-import {Activity} from "@/types/activity/activity";
+import { Activity } from "@/types/activity/activity";
 import apiClient from "@/services/api/client";
-import {ActivityUpdateRequest} from "@/types/activity/activity-update-request";
+import { ActivityUpdateRequest } from "@/types/activity/activity-update-request";
 
 /**
  * Get activity
