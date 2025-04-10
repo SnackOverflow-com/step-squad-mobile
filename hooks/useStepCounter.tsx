@@ -165,6 +165,7 @@ export const useStepCounter = (): UseStepCounterResult => {
         quantity: currentStepCount,
       };
 
+      // TODO: Update steps every 10s or so instead of on each step
       const update = async () => {
         try {
           await updateActivity(activityUpdateRequest);
@@ -175,6 +176,7 @@ export const useStepCounter = (): UseStepCounterResult => {
           console.error("Failed to update activity:", error);
         }
       };
+
       update();
     }
   }, [currentStepCount, activity, isInitialLoadComplete]);
