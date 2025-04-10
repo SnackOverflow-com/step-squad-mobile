@@ -1,10 +1,9 @@
-import {Gender} from "@/types/user/gender";
+import { Gender } from "@/types/user/gender";
 
 export interface UserUpdateRequest {
-    id: number;
-    firstName: string;
-    lastName: string;
-    email: string;
-    age?: number;
-    gender?: Gender
+  id: number | null;
+  firstName: string;
+  lastName: string;
+  age?: number;
+  gender?: Gender;
 }

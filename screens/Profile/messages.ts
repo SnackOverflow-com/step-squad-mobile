@@ -15,10 +15,6 @@ export const messages = {
     minLength: "Last name is required",
     maxLength: "Last name must be less than 30 characters",
   },
-  email: {
-    id: "profile.email",
-    defaultMessage: "Email",
-  },
   age: {
     id: "profile.age",
     defaultMessage: "Age",
@@ -41,7 +37,7 @@ export const messages = {
   },
   toggleTheme: {
     id: "profile.toggleTheme",
-    defaultMessage: "Toggle theme"
+    defaultMessage: "Toggle theme",
   },
   save: {
     id: "profile.save",

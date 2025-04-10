@@ -4,7 +4,6 @@ import { UserRegisterRequest } from "@/types/user/user-register-request";
 import { UserLoginRequest } from "@/types/user/user-login-request";
 import { UserLoginResponse } from "@/types/user/user-login-response";
 import { verifyStoredToken } from "../utils/jwt";
-import { User } from "@/types/user/user";
 
 /**
  * Login user with email and password

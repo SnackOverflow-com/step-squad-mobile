@@ -4,15 +4,15 @@ import styled, { DefaultTheme } from "styled-components/native";
 import BaseText from "./BaseText";
 import { useThemeContext } from "@/hooks";
 
-interface DropdownItem {
+interface MultiSelectDropdownItem {
   label: string;
   value: any;
 }
 
-interface DropdownProps {
+interface MultiSelectDropdownProps {
   label?: string;
   value?: string;
-  items: DropdownItem[];
+  items: MultiSelectDropdownItem[];
   onValueChange: (value: string) => void;
   placeholder?: string;
   error?: string;
@@ -20,11 +20,11 @@ interface DropdownProps {
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
-const DropdownContainer = styled(View)`
+const MultiSelectDropdownContainer = styled(View)`
   gap: 4px;
 `;
 
-const DropdownButton = styled(AnimatedPressable)`
+const MultiSelectDropdownButton = styled(AnimatedPressable)`
   flex-direction: row;
   align-items: center;
   justify-content: start;
@@ -82,7 +82,7 @@ const ErrorText = styled(BaseText)`
   margin-top: 4px;
 `;
 
-const Dropdown: React.FC<DropdownProps> = ({
+const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({
   label,
   value,
   items,
@@ -121,9 +121,9 @@ const Dropdown: React.FC<DropdownProps> = ({
   const displayText = selectedItem?.label || placeholder || "Select an option";
 
   return (
-    <DropdownContainer>
+    <MultiSelectDropdownContainer>
       {label && <BaseText color={theme.text}>{label}</BaseText>}
-      <DropdownButton
+      <MultiSelectDropdownButton
         theme={theme}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
@@ -133,7 +133,7 @@ const Dropdown: React.FC<DropdownProps> = ({
         }}
       >
         <SelectedText hasValue={!!selectedItem}>{displayText}</SelectedText>
-      </DropdownButton>
+      </MultiSelectDropdownButton>
 
       {error && <ErrorText size="xs">{error}</ErrorText>}
 
@@ -160,8 +160,8 @@ const Dropdown: React.FC<DropdownProps> = ({
           </ModalContent>
         </ModalOverlay>
       </Modal>
-    </DropdownContainer>
+    </MultiSelectDropdownContainer>
   );
 };
 
-export default Dropdown;
+export default MultiSelectDropdown;

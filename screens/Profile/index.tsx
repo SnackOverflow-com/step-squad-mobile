@@ -9,7 +9,6 @@ import SafeAreaWrapper from "@/components/SafeAreaWrapper";
 import Button from "@/components/ui/Button";
 import BaseText from "@/components/ui/BaseText";
 import TextInput from "@/components/ui/TextInput";
-import Dropdown from "@/components/ui/Dropdown";
 import Header from "./Header";
 import { messages } from "./messages";
 import { useThemeContext, useUser } from "@/hooks";
@@ -17,6 +16,7 @@ import { Gender } from "@/types/user/gender";
 import { updateUser } from "@/services/api/user";
 import { UserUpdateRequest } from "@/types/user/user-update-request";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import MultiSelectDropdown from "@/components/ui/MultiselectDropdown";
 
 const profileSchema = z.object({
   firstName: z
@@ -27,7 +27,6 @@ const profileSchema = z.object({
     .string()
     .min(1, messages.lastName.minLength)
     .max(30, messages.lastName.maxLength),
-  email: z.string().email("Please enter a valid email address"),
   age: z.number().min(0).max(150).optional().or(z.literal("")),
   gender: z.enum(["MALE", "FEMALE", "UNSPECIFIED"]).optional(),
 });
@@ -78,7 +77,6 @@ const ProfileScreen = () => {
     defaultValues: {
       firstName: "",
       lastName: "",
-      email: "",
       age: undefined,
       gender: "UNSPECIFIED",
     },
@@ -102,12 +100,12 @@ const ProfileScreen = () => {
   React.useEffect(() => {
     if (user) {
       reset({
-        firstName: user.firstName || "",
-        lastName: user.lastName || "",
-        email: user.email || "",
-        age: user.age || undefined,
-        gender: user.gender || "UNSPECIFIED",
-      });
+        id: user.id ?? null,
+        firstName: user.firstName ?? "",
+        lastName: user.lastName ?? "",
+        age: user.age ?? undefined,
+        gender: user.gender ?? "UNSPECIFIED",
+      } as UserUpdateRequest);
     }
   }, [user, reset]);
 
@@ -198,35 +196,13 @@ const ProfileScreen = () => {
 
           <Controller
             control={control}
-            name="email"
-            render={({ field: { onChange, onBlur, value } }) => (
-              <View>
-                <TextInput
-                  label={formatMessage(messages.email)}
-                  placeholder={messages.email.defaultMessage}
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  type="email"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  error={
-                    errors.email ? String(errors.email.message) : undefined
-                  }
-                />
-              </View>
-            )}
-          />
-
-          <Controller
-            control={control}
             name="age"
             render={({ field: { onChange, onBlur, value } }) => (
               <View>
                 <TextInput
                   label={formatMessage(messages.age)}
                   placeholder="Enter your age"
-                  value={value?.toString() || ""}
+                  value={value?.toString() ?? ""}
                   onChangeText={(text) =>
                     onChange(text === "" ? "" : Number(text))
                   }
@@ -242,7 +218,7 @@ const ProfileScreen = () => {
             control={control}
             name="gender"
             render={({ field: { onChange, value } }) => (
-              <Dropdown
+              <MultiSelectDropdown
                 label={formatMessage(messages.gender)}
                 value={value}
                 items={Object.keys(Gender).map((gender) => ({

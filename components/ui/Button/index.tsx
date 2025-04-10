@@ -1,11 +1,11 @@
 import React from "react";
-import { Pressable, Animated } from "react-native";
+import { Animated, Pressable } from "react-native";
 import styled from "styled-components/native";
 import {
-  StyledPressableProps,
   buttonSizeStyles,
-  getVariantStyles,
   getTextColor,
+  getVariantStyles,
+  StyledPressableProps,
 } from "./variants";
 import BaseText from "../BaseText";
 import { ButtonProps } from "./types";
