@@ -1,14 +1,18 @@
 import { Activity } from "@/types/activity/activity";
 import apiClient from "@/services/api/client";
 import { ActivityUpdateRequest } from "@/types/activity/activity-update-request";
+import { ActivityType } from "@/types/activity/activity-type";
 
 /**
  * Get activity
+ * @param type The type of activity to fetch
  * @returns The activity data
  */
-export const getActivity = async (): Promise<Activity> => {
+export const getActivity = async (type: ActivityType): Promise<Activity> => {
   try {
-    const response = await apiClient.get<Activity>(`/activity`);
+    const response = await apiClient.get<Activity>(`/activity`, {
+      params: { type },
+    });
 
     return response.data;
   } catch (error) {
