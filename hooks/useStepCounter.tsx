@@ -4,6 +4,7 @@ import { Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getActivity, updateActivity } from "@/services/api/activity";
 import { ActivityUpdateRequest } from "@/types/activity/activity-update-request";
+import { ActivityType } from "@/types/activity/activity-type";
 
 const ASYNC_STORAGE_STEP_KEY = "@StepSquad:currentStepCount"; // Define a key for storage
 
@@ -28,7 +29,7 @@ export const useStepCounter = (): UseStepCounterResult => {
   useEffect(() => {
     const fetchActivity = async () => {
       try {
-        const activityData = await getActivity();
+        const activityData = await getActivity(ActivityType.STEPS);
         setActivity(activityData); // Store the activity data in state
       } catch (error) {
         console.error("Failed to fetch activity:", error);
