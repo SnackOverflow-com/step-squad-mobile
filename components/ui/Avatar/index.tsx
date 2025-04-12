@@ -82,4 +82,6 @@ const Avatar = forwardRef<AvatarRef, AvatarProps>(
   }
 );
 
+Avatar.displayName = "Avatar";
+
 export default Avatar;
