@@ -9,7 +9,6 @@ import SafeAreaWrapper from "@/components/SafeAreaWrapper";
 import Button from "@/components/ui/Button";
 import BaseText from "@/components/ui/BaseText";
 import TextInput from "@/components/ui/TextInput";
-import Header from "./Header";
 import { messages } from "./messages";
 import { useThemeContext, useUser } from "@/hooks";
 import { Gender } from "@/types/user/gender";
@@ -17,6 +16,7 @@ import { updateUser } from "@/services/api/user";
 import { UserUpdateRequest } from "@/types/user/user-update-request";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import MultiSelectDropdown from "@/components/ui/MultiselectDropdown";
+import Header from "@/components/MainHeader";
 
 const profileSchema = z.object({
   firstName: z
@@ -132,7 +132,7 @@ const ProfileScreen = () => {
     return (
       <SafeAreaWrapper>
         <Container>
-          <Header />
+          <Header title={formatMessage(messages.title)} />
           <ErrorText size="m">
             Failed to load user data. Please try again.
           </ErrorText>
@@ -145,7 +145,7 @@ const ProfileScreen = () => {
   return (
     <SafeAreaWrapper>
       <Container>
-        <Header />
+        <Header title={formatMessage(messages.title)} />
 
         <InputWrapper>
           <Controller
