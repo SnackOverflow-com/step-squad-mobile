@@ -7,6 +7,7 @@ import Header from "@/components/MainHeader";
 import { useUser } from "@/hooks";
 import { useIntl } from "react-intl";
 import messages from "./messages";
+
 const Container = styled(View)`
   flex: 1;
   padding: 16px;

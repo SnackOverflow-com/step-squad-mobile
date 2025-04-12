@@ -9,6 +9,10 @@ const messages = defineMessages({
     id: "friends.empty",
     defaultMessage: "You don't have any friends yet",
   },
+  removeFriend: {
+    id: "friend.removeFriend",
+    defaultMessage: "Remove Friend",
+  },
 });
 
 export default messages;

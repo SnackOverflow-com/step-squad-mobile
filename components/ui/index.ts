@@ -6,3 +6,5 @@ export { default as TabBarBackground } from "./TabBarBackground";
 export { default as CircleChart } from "./CircleChart";
 export { default as Avatar } from "./Avatar";
 export { default as Dropdown } from "./Dropdown";
+export { default as Switcher } from "./Switcher";
+export type { SwitcherOption } from "./Switcher";

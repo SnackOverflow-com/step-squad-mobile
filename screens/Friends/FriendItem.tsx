@@ -1,7 +1,5 @@
-import { Avatar, BaseText, Button, Dropdown } from "@/components/ui";
-import { useThemeContext } from "@/hooks";
+import { Avatar, BaseText } from "@/components/ui";
 import { User } from "@/types/user/user";
-import { EllipsisVerticalIcon, TrashIcon } from "lucide-react-native";
 import React, { useMemo } from "react";
 import { defineMessages, useIntl } from "react-intl";
 import { View } from "react-native";
@@ -35,10 +33,6 @@ const messages = defineMessages({
     id: "friend.stepsDoneToday5",
     defaultMessage:
       "Today's count: <bold>{steps}</bold> of <bold>{goal}</bold> {emoji}",
-  },
-  removeFriend: {
-    id: "friend.removeFriend",
-    defaultMessage: "Remove Friend",
   },
 });
 
@@ -89,9 +83,14 @@ const getRandomMessageKey = (): StepMessageKey => {
   return stepMessageKeys[randomIndex];
 };
 
-const FriendItem = ({ user }: { user: User }) => {
+const FriendItem = ({
+  user,
+  action,
+}: {
+  user: User;
+  action: React.ReactNode;
+}) => {
   const { formatMessage } = useIntl();
-  const { theme } = useThemeContext();
 
   // Get a random message key but keep it stable for this component instance
   // Using useMemo with empty dependency array ensures it's only calculated once
@@ -130,21 +129,7 @@ const FriendItem = ({ user }: { user: User }) => {
         </UserDetails>
       </UserInfo>
 
-      <Dropdown position="bottom">
-        <Dropdown.Trigger>
-          <Button variant="ghost" size="s">
-            <EllipsisVerticalIcon color={theme.text} />
-          </Button>
-        </Dropdown.Trigger>
-
-        <Dropdown.Item
-          label={formatMessage(messages.removeFriend)}
-          icon={<TrashIcon />}
-          onPress={() => {
-            /* TODO: Implement remove friend */
-          }}
-        />
-      </Dropdown>
+      {action}
     </Container>
   );
 };
