@@ -13,6 +13,7 @@ import "react-native-reanimated";
 import { ThemeProvider, useColorScheme, AuthProvider, useAuth } from "@/hooks";
 import { IntlProviderWrapper } from "@/translations/intlConfig";
 import { ReactQueryProvider } from "@/services/queryClient";
+import { ToastProvider } from "@/components/ui/Toast";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -70,20 +71,22 @@ export default function RootLayout() {
             <NavigationThemeProvider
               value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
             >
-              <AuthGuard>
-                <Stack>
-                  <Stack.Screen
-                    name="(auth)"
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen
-                    name="(tabs)"
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen name="+not-found" />
-                </Stack>
-                <StatusBar style="auto" />
-              </AuthGuard>
+              <ToastProvider>
+                <AuthGuard>
+                  <Stack>
+                    <Stack.Screen
+                      name="(auth)"
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="(tabs)"
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen name="+not-found" />
+                  </Stack>
+                  <StatusBar style="auto" />
+                </AuthGuard>
+              </ToastProvider>
             </NavigationThemeProvider>
           </AuthProvider>
         </IntlProviderWrapper>

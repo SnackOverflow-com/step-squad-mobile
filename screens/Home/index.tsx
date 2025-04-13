@@ -1,9 +1,12 @@
 import SafeAreaWrapper from "@/components/SafeAreaWrapper";
 import { ScrollView, View } from "react-native";
 import styled from "styled-components/native";
-import Header from "./Header";
 import StepsSection from "./StepsSection";
 import HistorySection from "./HistorySection";
+import Header from "@/components/MainHeader";
+import { useUser } from "@/hooks";
+import { useIntl } from "react-intl";
+import messages from "./messages";
 
 const Container = styled(View)`
   flex: 1;
@@ -12,11 +15,16 @@ const Container = styled(View)`
 `;
 
 const HomeScreen = () => {
+  const { user } = useUser();
+  const { formatMessage } = useIntl();
+
   return (
     <SafeAreaWrapper>
       <ScrollView>
         <Container>
-          <Header />
+          <Header
+            title={formatMessage(messages.welcome, { name: user?.firstName })}
+          />
 
           <HistorySection />
 

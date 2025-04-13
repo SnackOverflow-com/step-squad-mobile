@@ -3,6 +3,7 @@ import { Pressable, View } from "react-native";
 import styled from "styled-components/native";
 import { DefaultTheme } from "styled-components";
 import BaseText from "../BaseText";
+import { useThemeContext } from "@/hooks";
 
 const Container = styled(Pressable)`
   position: relative;
@@ -13,12 +14,13 @@ const Container = styled(Pressable)`
   height: 40px;
   border-radius: 50%;
   background-color: ${({ theme }: { theme: DefaultTheme }) =>
-    theme.info.surface};
-  border: 1px solid ${({ theme }: { theme: DefaultTheme }) => theme.info.focus};
+    theme.mode === "light" ? theme.primary.surface : theme.primary.pressed};
+  border: 1px solid
+    ${({ theme }: { theme: DefaultTheme }) => theme.primary.focus};
 `;
 
 const StyledBaseText = styled(BaseText)`
-  color: ${({ theme }: { theme: DefaultTheme }) => theme.info.main};
+  color: ${({ theme }: { theme: DefaultTheme }) => theme.primary.main};
 `;
 
 const OnlineIndicator = styled(View)`
@@ -49,6 +51,7 @@ export interface AvatarRef {
 const Avatar = forwardRef<AvatarRef, AvatarProps>(
   ({ name, isOnline, onPress }, ref) => {
     const containerRef = useRef<View>(null);
+    const { theme } = useThemeContext();
 
     useImperativeHandle(ref, () => ({
       measurePosition: () => {
@@ -72,7 +75,11 @@ const Avatar = forwardRef<AvatarRef, AvatarProps>(
     }));
 
     return (
-      <Container ref={containerRef} onPress={onPress}>
+      <Container
+        ref={containerRef}
+        onPress={onPress}
+        style={{ border: `1px solid ${theme.primary.main}` }}
+      >
         <StyledBaseText size="s" fontWeight="700">
           {name.charAt(0)}
         </StyledBaseText>
@@ -81,5 +88,7 @@ const Avatar = forwardRef<AvatarRef, AvatarProps>(
     );
   }
 );
+
+Avatar.displayName = "Avatar";
 
 export default Avatar;

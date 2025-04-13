@@ -17,18 +17,6 @@ const messages = defineMessages({
     id: "home.requestPermission",
     defaultMessage: "Request step counting permission",
   },
-  profile: {
-    id: "home.profile",
-    defaultMessage: "My profile",
-  },
-  settings: {
-    id: "home.settings",
-    defaultMessage: "Settings",
-  },
-  logout: {
-    id: "home.logout",
-    defaultMessage: "Logout",
-  },
 });
 
 export default messages;

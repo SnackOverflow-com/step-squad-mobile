@@ -1,6 +1,5 @@
 import { css, DefaultTheme } from "styled-components/native";
-
-import { ButtonVariant, ButtonSize } from "./index";
+import { ButtonSize, ButtonVariant } from "./types";
 
 export interface StyledPressableProps {
   variant: ButtonVariant;
@@ -82,7 +81,7 @@ export const secondaryStyles = css<StyledPressableProps>`
 // Outline button variant styles
 export const outlineStyles = css<StyledPressableProps>`
   background-color: ${({ theme, pressed }) =>
-    pressed ? theme.contrast[10] : "transparent"};
+    pressed ? "rgba(0, 0, 0, 0.03)" : "transparent"};
   border-color: ${({ theme }) => theme.border};
   border-width: 1px;
 
@@ -92,7 +91,7 @@ export const outlineStyles = css<StyledPressableProps>`
 // Ghost button variant styles
 export const ghostStyles = css<StyledPressableProps>`
   background-color: ${({ theme, pressed }) =>
-    pressed ? theme.contrast[10] : "transparent"};
+    pressed ? "rgba(0, 0, 0, 0.03)" : "transparent"};
   border-color: transparent;
   border-width: 0;
 

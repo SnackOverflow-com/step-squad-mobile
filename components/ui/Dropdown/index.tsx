@@ -120,7 +120,7 @@ const Item = ({ children, onPress, label, icon }: ItemProps) => {
 
   // Get appropriate colors from theme
   const rippleColor = theme.contrast[20];
-  const pressedColor = theme.contrast[10];
+  const pressedColor = "rgba(0, 0, 0, 0.03)";
 
   return (
     <DropdownItemContainer

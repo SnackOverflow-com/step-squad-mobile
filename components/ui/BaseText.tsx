@@ -1,3 +1,4 @@
+import { neutralColors } from "@/hooks/useThemeContext";
 import React from "react";
 import { Text, TextProps } from "react-native";
 import styled from "styled-components/native";
@@ -37,15 +38,21 @@ const StyledText = styled(Text)<{
     return theme.lineHeight[size];
   }};
 
-  color: ${({ theme, color }: { theme: DefaultTheme; color?: string }) => {
-    return color || theme.text;
+  color: ${({
+    theme,
+    color,
+  }: {
+    theme: DefaultTheme;
+    color?: keyof typeof neutralColors;
+  }) => {
+    return color ? theme.contrast[color] : theme.text;
   }};
 `;
 
 interface BaseTextProps extends TextProps {
   fontWeight?: FontWeight;
   size?: FontSize;
-  color?: string;
+  color?: keyof typeof neutralColors;
 }
 
 // Updated to use forwardRef to properly handle refs

@@ -1,12 +1,12 @@
 import React from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { useRouter, useSegments } from "expo-router";
-import { Compass, Home, User } from "lucide-react-native";
+import { Home, User, Users } from "lucide-react-native";
 import { useThemeContext, lightTheme } from "@/hooks";
 
 const tabs = [
   { name: "index", icon: Home, path: "/" },
-  { name: "explore", icon: Compass, path: "/explore" },
+  { name: "friends", icon: Users, path: "/friends" },
   { name: "profile", icon: User, path: "/profile" },
 ];
 

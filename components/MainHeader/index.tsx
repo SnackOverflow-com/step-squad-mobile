@@ -7,9 +7,9 @@ import { useRouter } from "expo-router";
 
 import { BaseText, Dropdown } from "@/components/ui";
 import { useAuth, useUser } from "@/hooks";
-import messages from "./messages";
 import Avatar from "@/components/ui/Avatar";
 import { LogOutIcon, UserIcon } from "lucide-react-native";
+import { messages } from "./messages";
 
 const Container = styled(View)`
   flex-direction: row;
@@ -36,7 +36,7 @@ const StyledLogoutIcon = styled(LogOutIcon)`
   color: ${({ theme }: { theme: DefaultTheme }) => theme.text};
 `;
 
-const Header = () => {
+const Header = ({ title }: { title: string }) => {
   const { user } = useUser();
   const { formatMessage } = useIntl();
   const { logout } = useAuth();
@@ -50,7 +50,7 @@ const Header = () => {
   return (
     <Container>
       <BaseText size="l" fontWeight="700">
-        {formatMessage(messages.welcome, { name: user?.firstName })}
+        {title}
       </BaseText>
 
       <NotificationContainer>
@@ -72,7 +72,7 @@ const Header = () => {
           <Dropdown.Item
             label={formatMessage(messages.profile)}
             icon={<StyledUserIcon />}
-            onPress={() => console.log("Profile")}
+            onPress={() => router.push("/profile")}
           />
 
           <Dropdown.Divider />

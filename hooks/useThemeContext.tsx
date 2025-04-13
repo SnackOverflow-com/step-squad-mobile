@@ -92,6 +92,7 @@ export const contrastColors = (mode: ThemeMode) => {
 
 // Define theme colors for both modes
 export const lightTheme = {
+  mode: "light" as ThemeMode,
   background: neutralColors[10],
   text: neutralColors[100],
   textSecondary: contrastColors("light")[70],
@@ -110,6 +111,7 @@ export const lightTheme = {
 };
 
 export const darkTheme = {
+  mode: "dark" as ThemeMode,
   background: neutralColors[100],
   text: neutralColors[10],
   textSecondary: contrastColors("dark")[40],
