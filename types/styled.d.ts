@@ -3,6 +3,7 @@ import "styled-components/native";
 // Define the theme interface
 declare module "styled-components/native" {
   export interface DefaultTheme {
+    mode: "light" | "dark";
     background: string;
     text: string;
     textSecondary: string;

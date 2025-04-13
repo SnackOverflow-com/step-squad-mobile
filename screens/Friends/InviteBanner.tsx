@@ -40,7 +40,7 @@ const InviteBanner = () => {
 
   return (
     <StyledLinearGradient
-      colors={[theme.error.border, theme.info.hover]}
+      colors={[theme.error.main, theme.primary.main]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
     >

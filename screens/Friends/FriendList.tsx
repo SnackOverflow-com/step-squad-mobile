@@ -1,8 +1,5 @@
-import { BaseText, Button, Dropdown } from "@/components/ui";
-import React, { Fragment } from "react";
+import React from "react";
 import { View } from "react-native";
-import FriendItem from "./FriendItem";
-import { useThemeContext, useUser } from "@/hooks";
 import styled from "styled-components/native";
 import {
   EllipsisVerticalIcon,
@@ -10,11 +7,21 @@ import {
   UserRoundSearch,
 } from "lucide-react-native";
 import { useIntl } from "react-intl";
-import messages from "./messages";
+
+import { BaseText, Button, Dropdown } from "@/components/ui";
 import InfoMessage from "@/components/InfoMessage";
+import { useThemeContext, useUser } from "@/hooks";
+import FriendItem from "./FriendItem";
+import messages from "./messages";
+
+const Container = styled(View)`
+  flex: 1;
+  gap: 4px;
+`;
 
 const FriendListContainer = styled(View)`
   gap: 8px;
+  padding-bottom: 100px;
 `;
 
 const EmptyStateContainer = styled(View)`
@@ -43,8 +50,8 @@ const FriendList = () => {
   }
 
   return (
-    <Fragment>
-      <BaseText size="m">You have 3,456 friends</BaseText>
+    <Container>
+      <BaseText size="s">You have 3,456 friends</BaseText>
 
       <FriendListContainer>
         {[...Array(20)].map((_, index) => (
@@ -71,7 +78,7 @@ const FriendList = () => {
           />
         ))}
       </FriendListContainer>
-    </Fragment>
+    </Container>
   );
 };
 
