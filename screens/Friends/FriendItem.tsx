@@ -6,6 +6,7 @@ import { defineMessages, useIntl } from "react-intl";
 import { View } from "react-native";
 import { DefaultTheme } from "styled-components";
 import styled from "styled-components/native";
+import { FriendWithActivityResponseDto } from "@/services/api/friend";
 
 const messages = defineMessages({
   fullName: {
@@ -78,7 +79,7 @@ const stepMessageKeys = [
 
 type StepMessageKey = (typeof stepMessageKeys)[number];
 
-// Function to get a random message key
+// Get a random message key
 const getRandomMessageKey = (): StepMessageKey => {
   const randomIndex = Math.floor(Math.random() * stepMessageKeys.length);
   return stepMessageKeys[randomIndex];
@@ -86,12 +87,12 @@ const getRandomMessageKey = (): StepMessageKey => {
 
 const FriendItem = ({
   user,
-  descriptionType = "none",
   action,
+  descriptionType = "steps",
 }: {
-  user: User;
-  descriptionType?: "steps" | "ageGender" | "none";
-  action?: React.ReactNode;
+  user: User | FriendWithActivityResponseDto;
+  action: React.ReactNode;
+  descriptionType?: "steps" | "ageGender";
 }) => {
   const { formatMessage } = useIntl();
 
@@ -101,8 +102,24 @@ const FriendItem = ({
 
   if (!user) return null;
 
-  const STEPS = 245;
-  const GOAL = 10000;
+  // Extract activity data if available
+  const todayActivity =
+    "todayStepsActivity" in user ? user.todayStepsActivity : undefined;
+  const STEPS = todayActivity?.quantity || 0;
+  const GOAL = todayActivity?.goal || 10000;
+
+  // For description type "ageGender"
+  const ageAndGender = () => {
+    const parts = [];
+    if (user.age) parts.push(`${user.age} years`);
+    if (user.gender && user.gender !== "UNSPECIFIED") {
+      const genderLabel = genderOptions.find(
+        (g) => g.value === user.gender
+      )?.label;
+      if (genderLabel) parts.push(genderLabel);
+    }
+    return parts.join(", ");
+  };
 
   return (
     <Container>
@@ -117,15 +134,7 @@ const FriendItem = ({
             })}
           </BaseText>
 
-          {descriptionType === "ageGender" &&
-            (user.age || user.gender !== "UNSPECIFIED") && (
-              <BaseText size="xs" color={70}>
-                {user.age}{" "}
-                {genderOptions.find((g) => g.value === user.gender)?.label}
-              </BaseText>
-            )}
-
-          {descriptionType === "steps" && (
+          {descriptionType === "steps" ? (
             <BaseText size="xs" color={70}>
               {formatMessage(messages[messageKey], {
                 steps: STEPS,
@@ -137,6 +146,10 @@ const FriendItem = ({
                   </BaseText>
                 ),
               })}
+            </BaseText>
+          ) : (
+            <BaseText size="xs" color={70}>
+              {ageAndGender()}
             </BaseText>
           )}
         </UserDetails>

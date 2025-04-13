@@ -11,7 +11,43 @@ const messages = defineMessages({
   },
   removeFriend: {
     id: "friend.removeFriend",
-    defaultMessage: "Remove Friend",
+    defaultMessage: "Remove friend",
+  },
+  errorTitle: {
+    id: "friends.error.title",
+    defaultMessage: "Error",
+  },
+  errorContent: {
+    id: "friends.error.content",
+    defaultMessage: "Failed to load friends",
+  },
+  emptyContent: {
+    id: "friends.empty.content",
+    defaultMessage: "Add friends to your list",
+  },
+  friendCountSingular: {
+    id: "friends.count.singular",
+    defaultMessage: "You have 1 friend",
+  },
+  friendCountPlural: {
+    id: "friends.count.plural",
+    defaultMessage: "You have {count} friends",
+  },
+  successRemove: {
+    id: "friends.remove.success.title",
+    defaultMessage: "Success",
+  },
+  successRemoveDescription: {
+    id: "friends.remove.success.description",
+    defaultMessage: "Friend removed successfully",
+  },
+  errorRemove: {
+    id: "friends.remove.error.title",
+    defaultMessage: "Error",
+  },
+  errorRemoveDescription: {
+    id: "friends.remove.error.description",
+    defaultMessage: "Failed to remove friend",
   },
 });
 

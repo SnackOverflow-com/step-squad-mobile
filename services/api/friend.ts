@@ -1,3 +1,4 @@
+import { ActivityResponse } from "@/types/activity/activity-response";
 import apiClient from "./client";
 import { User } from "@/types/user/user";
 
@@ -8,6 +9,10 @@ export interface FriendSearchRequestDto {
 
 export interface FriendResponseDto extends User {
   isFriend: boolean;
+}
+
+export interface FriendWithActivityResponseDto extends FriendResponseDto {
+  todayStepsActivity?: ActivityResponse;
 }
 
 /**
@@ -40,4 +45,16 @@ export const addFriend = async (userId: number): Promise<void> => {
  */
 export const removeFriend = async (userId: number): Promise<void> => {
   await apiClient.delete(`/friend/${userId}`);
+};
+
+/**
+ * Get all friends with their activities
+ * @returns A promise that resolves to an array of friends with activities
+ */
+export const getFriendsWithActivities = async (): Promise<
+  FriendWithActivityResponseDto[]
+> => {
+  const { data } =
+    await apiClient.get<FriendWithActivityResponseDto[]>("/friend/list");
+  return data;
 };
