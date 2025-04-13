@@ -31,11 +31,11 @@ export const searchUsers = async (
 
 /**
  * Add a user as a friend
- * @param userId - The ID of the user to add as a friend
+ * @param friendId - The ID of the user to add as a friend
  * @returns A promise that resolves when the friend is added
  */
-export const addFriend = async (userId: number): Promise<void> => {
-  await apiClient.post("/friend", { userId });
+export const addFriend = async (friendId: number): Promise<void> => {
+  await apiClient.put(`/friend/${friendId}`);
 };
 
 /**

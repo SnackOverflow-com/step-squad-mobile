@@ -58,6 +58,7 @@ const FriendList = () => {
     onSuccess: () => {
       // Invalidate the query cache - this will automatically trigger a refetch
       queryClient.invalidateQueries({ queryKey: ["friends"] });
+      queryClient.invalidateQueries({ queryKey: ["friendSearch"] });
 
       toast.success({
         title: formatMessage(messages.successRemove),

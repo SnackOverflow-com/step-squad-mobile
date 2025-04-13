@@ -49,6 +49,43 @@ const messages = defineMessages({
     id: "friends.remove.error.description",
     defaultMessage: "Failed to remove friend",
   },
+  successAdd: {
+    id: "friends.add.success.title",
+    defaultMessage: "Success",
+  },
+  successAddDescription: {
+    id: "friends.add.success.description",
+    defaultMessage: "Friend added successfully",
+  },
+  errorAdd: {
+    id: "friends.add.error.title",
+    defaultMessage: "Error",
+  },
+  errorAddDescription: {
+    id: "friends.add.error.description",
+    defaultMessage: "Failed to add friend",
+  },
+  // AddFriends component messages
+  searchPlaceholder: {
+    id: "friends.addFriends.searchPlaceholder",
+    defaultMessage: "Search friends..",
+  },
+  add: {
+    id: "friends.addFriends.add",
+    defaultMessage: "Add",
+  },
+  noResults: {
+    id: "friends.addFriends.noResults",
+    defaultMessage: "No users found",
+  },
+  searchTitle: {
+    id: "friends.addFriends.searchTitle",
+    defaultMessage: "Search friend",
+  },
+  searchContent: {
+    id: "friends.addFriends.searchContent",
+    defaultMessage: "Start typing to search for friends",
+  },
   confirmRemoveTitle: {
     id: "friends.remove.confirm.title",
     defaultMessage: "Remove friend",

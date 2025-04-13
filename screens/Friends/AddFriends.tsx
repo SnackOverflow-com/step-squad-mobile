@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 import { View, ActivityIndicator } from "react-native";
 import styled from "styled-components/native";
-import { defineMessages, useIntl } from "react-intl";
+import { useIntl } from "react-intl";
 import { DefaultTheme } from "styled-components";
 import { SearchIcon, UserCheckIcon } from "lucide-react-native";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -15,29 +15,7 @@ import {
   searchUsers,
   addFriend,
 } from "@/services/api/friend";
-
-const messages = defineMessages({
-  searchPlaceholder: {
-    id: "friends.addFriends.searchPlaceholder",
-    defaultMessage: "Search friends..",
-  },
-  add: {
-    id: "friends.addFriends.add",
-    defaultMessage: "Add",
-  },
-  noResults: {
-    id: "friends.addFriends.noResults",
-    defaultMessage: "No users found",
-  },
-  searchTitle: {
-    id: "friends.addFriends.searchTitle",
-    defaultMessage: "Search friend",
-  },
-  searchContent: {
-    id: "friends.addFriends.searchContent",
-    defaultMessage: "Start typing to search for friends",
-  },
-});
+import messages from "./messages";
 
 const StyledSearchIcon = styled(SearchIcon)`
   color: ${({ theme }: { theme: DefaultTheme }) => theme.contrast[80]};
@@ -61,32 +39,37 @@ const AddFriends = () => {
   const { theme } = useThemeContext();
 
   const { data: searchResults, isLoading } = useQuery<FriendResponseDto[]>({
-    queryKey: ["friendSearch", searchQuery],
+    queryKey: ["friendSearch"],
     queryFn: () => searchUsers(searchQuery),
     enabled: searchQuery.length > 0,
+    networkMode: "always",
   });
 
   const addFriendMutation = useMutation({
-    mutationFn: (userId: number) => addFriend(userId),
+    mutationFn: (friendId: number) => addFriend(friendId),
     onSuccess: () => {
-      // Invalidate friends list query to refresh the data
+      // Invalidate queries - this will automatically trigger a refetch
       queryClient.invalidateQueries({ queryKey: ["friends"] });
+      // Also invalidate the search results to update the UI
+      queryClient.invalidateQueries({ queryKey: ["friendSearch"] });
+
       toast.success({
-        title: "Success",
-        description: "Friend added successfully",
+        title: formatMessage(messages.successAdd),
+        description: formatMessage(messages.successAddDescription),
       });
     },
     onError: (error) => {
       toast.error({
-        title: "Error",
-        description: "Failed to add friend",
+        title: formatMessage(messages.errorAdd),
+        description: formatMessage(messages.errorAddDescription),
       });
       console.error("Failed to add friend:", error);
     },
   });
 
-  const handleAddFriend = (userId: number) => {
-    addFriendMutation.mutate(userId);
+  const handleAddFriend = (friendId: number) => {
+    if (addFriendMutation.isPending) return;
+    addFriendMutation.mutate(friendId);
   };
 
   const hasSearchResults = searchResults && searchResults.length > 0;
