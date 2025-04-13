@@ -8,3 +8,5 @@ export { default as Avatar } from "./Avatar";
 export { default as Dropdown } from "./Dropdown";
 export { default as Switcher } from "./Switcher";
 export type { SwitcherOption } from "./Switcher";
+export { default as Toast, ToastProvider, useToast } from "./Toast";
+export type { ToastProps, ToastVariant } from "./Toast";

@@ -43,4 +43,20 @@ export const messages = {
     id: "profile.save",
     defaultMessage: "Save",
   },
+  updateSuccess: {
+    id: "profile.updateSuccess",
+    defaultMessage: "Profile updated",
+  },
+  updateSuccessDescription: {
+    id: "profile.updateSuccessDescription",
+    defaultMessage: "Your profile has been updated successfully",
+  },
+  updateError: {
+    id: "profile.updateError",
+    defaultMessage: "Update failed",
+  },
+  updateErrorDescription: {
+    id: "profile.updateErrorDescription",
+    defaultMessage: "Failed to update your profile. Please try again.",
+  },
 };

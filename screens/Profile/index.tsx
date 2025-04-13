@@ -3,8 +3,9 @@ import { ActivityIndicator, View } from "react-native";
 import styled, { DefaultTheme } from "styled-components/native";
 import { useIntl } from "react-intl";
 import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+
+import { zodResolver } from "@hookform/resolvers/zod";
 import SafeAreaWrapper from "@/components/SafeAreaWrapper";
 import Button from "@/components/ui/Button";
 import BaseText from "@/components/ui/BaseText";
@@ -17,6 +18,7 @@ import { UserUpdateRequest } from "@/types/user/user-update-request";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import MultiSelectDropdown from "@/components/ui/MultiselectDropdown";
 import Header from "@/components/MainHeader";
+import { useToast } from "@/components/ui/Toast";
 
 const profileSchema = z.object({
   firstName: z
@@ -66,6 +68,7 @@ const ProfileScreen = () => {
   const { toggleTheme } = useThemeContext();
   const { user, isLoading, error, refetch } = useUser();
   const queryClient = useQueryClient();
+  const toast = useToast();
 
   const {
     control,
@@ -88,10 +91,18 @@ const ProfileScreen = () => {
       updateUser(userUpdateRequest),
     onSuccess: (updatedUser) => {
       queryClient.setQueryData(["currentUser"], updatedUser);
+      toast.success({
+        title: formatMessage(messages.updateSuccess),
+        description: formatMessage(messages.updateSuccessDescription),
+      });
     },
     onError: (error: any) => {
       setError("root", {
         message: "Something went wrong. Please try again.",
+      });
+      toast.error({
+        title: formatMessage(messages.updateError),
+        description: formatMessage(messages.updateErrorDescription),
       });
       console.error("Profile edit error:", error);
     },
@@ -247,7 +258,7 @@ const ProfileScreen = () => {
             {updateUserMutation.isPending ? (
               <ButtonContent>
                 <ActivityIndicator size="small" color="white" />
-                <BaseText color="white" fontWeight="600">
+                <BaseText fontWeight="600">
                   {formatMessage(messages.save)}
                 </BaseText>
               </ButtonContent>
