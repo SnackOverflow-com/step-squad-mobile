@@ -56,6 +56,7 @@ const FriendList = () => {
       <FriendListContainer>
         {[...Array(20)].map((_, index) => (
           <FriendItem
+            descriptionType="steps"
             key={index}
             user={user!}
             action={

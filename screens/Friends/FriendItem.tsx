@@ -1,4 +1,5 @@
 import { Avatar, BaseText } from "@/components/ui";
+import { genderOptions } from "@/types/user/gender";
 import { User } from "@/types/user/user";
 import React, { useMemo } from "react";
 import { defineMessages, useIntl } from "react-intl";
@@ -85,10 +86,12 @@ const getRandomMessageKey = (): StepMessageKey => {
 
 const FriendItem = ({
   user,
+  descriptionType = "none",
   action,
 }: {
   user: User;
-  action: React.ReactNode;
+  descriptionType?: "steps" | "ageGender" | "none";
+  action?: React.ReactNode;
 }) => {
   const { formatMessage } = useIntl();
 
@@ -114,18 +117,28 @@ const FriendItem = ({
             })}
           </BaseText>
 
-          <BaseText size="xs" color={70}>
-            {formatMessage(messages[messageKey], {
-              steps: STEPS,
-              goal: GOAL,
-              emoji: emojiGenerator(STEPS, GOAL),
-              bold: (chunk) => (
-                <BaseText size="xs" fontWeight="600">
-                  {chunk}
-                </BaseText>
-              ),
-            })}
-          </BaseText>
+          {descriptionType === "ageGender" &&
+            (user.age || user.gender !== "UNSPECIFIED") && (
+              <BaseText size="xs" color={70}>
+                {user.age}{" "}
+                {genderOptions.find((g) => g.value === user.gender)?.label}
+              </BaseText>
+            )}
+
+          {descriptionType === "steps" && (
+            <BaseText size="xs" color={70}>
+              {formatMessage(messages[messageKey], {
+                steps: STEPS,
+                goal: GOAL,
+                emoji: emojiGenerator(STEPS, GOAL),
+                bold: (chunk) => (
+                  <BaseText size="xs" fontWeight="600">
+                    {chunk}
+                  </BaseText>
+                ),
+              })}
+            </BaseText>
+          )}
         </UserDetails>
       </UserInfo>
 
