@@ -68,22 +68,20 @@ const Toast = ({
   const translateX = useRef(new Animated.Value(0)).current;
   const { theme } = useThemeContext();
 
-  const SWIPE_THRESHOLD = -80; // How far to swipe before dismissing
+  const SWIPE_THRESHOLD = 80; // How far to swipe before dismissing (now a positive value)
 
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderMove: (_, gesture) => {
-        // Only allow swiping left (negative dx)
-        if (gesture.dx < 0) {
-          translateX.setValue(gesture.dx);
-        }
+        // Allow swiping in both directions
+        translateX.setValue(gesture.dx);
       },
       onPanResponderRelease: (_, gesture) => {
-        if (gesture.dx < SWIPE_THRESHOLD) {
-          // Swiped past threshold - dismiss
+        if (Math.abs(gesture.dx) > SWIPE_THRESHOLD) {
+          // Swiped past threshold in either direction - dismiss
           Animated.timing(translateX, {
-            toValue: -500, // Swipe far off screen
+            toValue: gesture.dx < 0 ? -500 : 500, // Swipe off screen in the appropriate direction
             duration: 200,
             useNativeDriver: true,
           }).start(() => {
