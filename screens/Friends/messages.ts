@@ -49,6 +49,22 @@ const messages = defineMessages({
     id: "friends.remove.error.description",
     defaultMessage: "Failed to remove friend",
   },
+  confirmRemoveTitle: {
+    id: "friends.remove.confirm.title",
+    defaultMessage: "Remove friend",
+  },
+  confirmRemoveMessage: {
+    id: "friends.remove.confirm.message",
+    defaultMessage: "Are you sure you want to remove {name} from your friends?",
+  },
+  cancel: {
+    id: "common.cancel",
+    defaultMessage: "Cancel",
+  },
+  confirm: {
+    id: "common.confirm",
+    defaultMessage: "Confirm",
+  },
 });
 
 export default messages;

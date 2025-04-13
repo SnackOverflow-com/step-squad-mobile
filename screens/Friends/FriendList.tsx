@@ -56,7 +56,9 @@ const FriendList = () => {
   const removeFriendMutation = useMutation({
     mutationFn: (friendId: number) => removeFriend(friendId),
     onSuccess: () => {
+      // Invalidate the query cache - this will automatically trigger a refetch
       queryClient.invalidateQueries({ queryKey: ["friends"] });
+
       toast.success({
         title: formatMessage(messages.successRemove),
         description: formatMessage(messages.successRemoveDescription),
@@ -72,6 +74,7 @@ const FriendList = () => {
   });
 
   const handleRemoveFriend = (friendId: number) => {
+    if (removeFriendMutation.isPending) return;
     removeFriendMutation.mutate(friendId);
   };
 

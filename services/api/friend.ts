@@ -40,11 +40,11 @@ export const addFriend = async (userId: number): Promise<void> => {
 
 /**
  * Remove a friend
- * @param userId - The ID of the friend to remove
+ * @param friendId - The ID of the friend to remove
  * @returns A promise that resolves when the friend is removed
  */
-export const removeFriend = async (userId: number): Promise<void> => {
-  await apiClient.delete(`/friend/${userId}`);
+export const removeFriend = async (friendId: number): Promise<void> => {
+  await apiClient.delete(`/friend/${friendId}`);
 };
 
 /**
