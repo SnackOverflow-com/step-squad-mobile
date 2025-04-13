@@ -4,21 +4,22 @@ import styled, { DefaultTheme } from "styled-components/native";
 import { useIntl } from "react-intl";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
-
 import { zodResolver } from "@hookform/resolvers/zod";
-import SafeAreaWrapper from "@/components/SafeAreaWrapper";
-import Button from "@/components/ui/Button";
-import BaseText from "@/components/ui/BaseText";
-import TextInput from "@/components/ui/TextInput";
-import { messages } from "./messages";
-import { useThemeContext, useUser } from "@/hooks";
-import { Gender } from "@/types/user/gender";
-import { updateUser } from "@/services/api/user";
-import { UserUpdateRequest } from "@/types/user/user-update-request";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import MultiSelectDropdown from "@/components/ui/MultiselectDropdown";
+
+import SafeAreaWrapper from "@/components/SafeAreaWrapper";
+import {
+  Button,
+  BaseText,
+  TextInput,
+  MultiSelectDropdown,
+  useToast,
+} from "@/components/ui";
 import Header from "@/components/MainHeader";
-import { useToast } from "@/components/ui/Toast";
+import { Gender, UserUpdateRequest } from "@/types";
+import { useThemeContext, useUser } from "@/hooks";
+import { updateUser } from "@/services/api/user";
+import { messages } from "./messages";
 
 const profileSchema = z.object({
   firstName: z
