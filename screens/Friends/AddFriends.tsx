@@ -39,7 +39,7 @@ const AddFriends = () => {
   const { theme } = useThemeContext();
 
   const { data: searchResults, isLoading } = useQuery<FriendResponseDto[]>({
-    queryKey: ["friendSearch"],
+    queryKey: ["friendSearch", searchQuery],
     queryFn: () => searchUsers(searchQuery),
     enabled: searchQuery.length > 0,
     networkMode: "always",
