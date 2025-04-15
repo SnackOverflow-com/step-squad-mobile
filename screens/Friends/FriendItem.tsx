@@ -7,6 +7,7 @@ import { View } from "react-native";
 import { DefaultTheme } from "styled-components";
 import styled from "styled-components/native";
 import { FriendWithActivityResponseDto } from "@/services/api/friend";
+import { LinearGradient } from "expo-linear-gradient";
 
 const messages = defineMessages({
   fullName: {
@@ -38,13 +39,28 @@ const messages = defineMessages({
   },
 });
 
-const Container = styled(View)`
+interface ContainerProps {
+  theme: DefaultTheme;
+  backgroundColor?: string;
+}
+
+const ContainerBase = styled(View)<ContainerProps>`
   flex-direction: row;
   align-items: center;
   padding: 4px;
   border-radius: 8px;
   justify-content: space-between;
-  background-color: ${({ theme }: { theme: DefaultTheme }) => theme.card};
+  background-color: ${({ theme, backgroundColor }: ContainerProps) =>
+    backgroundColor || theme.card};
+  gap: 16px;
+`;
+
+const GradientContainer = styled(LinearGradient)`
+  flex-direction: row;
+  align-items: center;
+  padding: 4px;
+  border-radius: 8px;
+  justify-content: space-between;
   gap: 16px;
 `;
 
@@ -89,10 +105,14 @@ const FriendItem = ({
   user,
   action,
   descriptionType = "steps",
+  backgroundColor,
+  gradientColors,
 }: {
   user: User | FriendWithActivityResponseDto;
-  action: React.ReactNode;
+  action?: React.ReactNode;
   descriptionType?: "steps" | "ageGender";
+  backgroundColor?: string;
+  gradientColors?: string[];
 }) => {
   const { formatMessage } = useIntl();
 
@@ -111,7 +131,7 @@ const FriendItem = ({
   // For description type "ageGender"
   const ageAndGender = () => {
     const parts = [];
-    if (user.age) parts.push(`${user.age} years`);
+    if (user.age) parts.push(`${user.age} years old`);
     if (user.gender && user.gender !== "UNSPECIFIED") {
       const genderLabel = genderOptions.find(
         (g) => g.value === user.gender
@@ -121,8 +141,8 @@ const FriendItem = ({
     return parts.join(", ");
   };
 
-  return (
-    <Container>
+  const renderContent = () => (
+    <>
       <UserInfo>
         <Avatar name={user.firstName} />
 
@@ -156,7 +176,25 @@ const FriendItem = ({
       </UserInfo>
 
       {action}
-    </Container>
+    </>
+  );
+
+  if (gradientColors && gradientColors.length >= 2) {
+    return (
+      <GradientContainer
+        colors={gradientColors}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+      >
+        {renderContent()}
+      </GradientContainer>
+    );
+  }
+
+  return (
+    <ContainerBase backgroundColor={backgroundColor}>
+      {renderContent()}
+    </ContainerBase>
   );
 };
 
