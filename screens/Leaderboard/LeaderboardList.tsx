@@ -6,7 +6,7 @@ import { LeaderboardType } from "@/types/leaderboard/leaderboard-type";
 import { getOrdinalSuffix } from "@/services/utils/string";
 import messages from "./messages";
 import { BaseText } from "@/components/ui";
-import { Trophy } from "lucide-react-native";
+import { Footprints, Trophy } from "lucide-react-native";
 import { DefaultTheme } from "styled-components";
 import FriendItem from "../Friends/FriendItem";
 import { useThemeContext, useUser } from "@/hooks";
@@ -28,6 +28,16 @@ const PositionWrapper = styled(View)`
 `;
 
 const StyledTrophyIcon = styled(Trophy)`
+  color: ${({ theme }: { theme: DefaultTheme }) => theme.text};
+`;
+
+const StepsContainer = styled(View)`
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+`;
+
+const StyledFootprintsIcon = styled(Footprints)`
   color: ${({ theme }: { theme: DefaultTheme }) => theme.text};
 `;
 
@@ -82,20 +92,47 @@ const LeaderboardList = ({ type }: LeaderboardListProps) => {
       ) : null;
     } else {
       // For positions beyond 3, use text indicators
-      positionIndicator = <PositionText>#{position}</PositionText>;
+      positionIndicator = (
+        <PositionText>
+          {formatMessage(messages.positionPrefix, { position })}
+        </PositionText>
+      );
     }
 
     // If this is the current user, add the "(you)" indicator
     if (isCurrentUser) {
       return (
         <ActionContainer>
-          <YouIndicator size="xs">(you)</YouIndicator>
+          <YouIndicator size="xs">
+            {formatMessage(messages.youIndicator)}
+          </YouIndicator>
           {positionIndicator}
         </ActionContainer>
       );
     }
 
     return positionIndicator;
+  };
+
+  // Create steps display with icon
+  const getStepsDisplay = (steps: number) => (
+    <StepsContainer>
+      <StyledFootprintsIcon size={12} />
+      <BaseText size="xs" color={70}>
+        {formatMessage(messages.stepsText, { steps: steps.toLocaleString() })}
+      </BaseText>
+    </StepsContainer>
+  );
+
+  // Example step counts for each user in the leaderboard
+  // In a real app, this would come from your API or database
+  const getStepCount = (position: number) => {
+    // Create some sample data that decreases with position
+    const baseSteps = 15000;
+    const steps = Math.floor(
+      baseSteps - (position - 1) * 500 + Math.random() * 200
+    );
+    return steps;
   };
 
   return (
@@ -115,15 +152,16 @@ const LeaderboardList = ({ type }: LeaderboardListProps) => {
         {[...Array(10)].map((_, index) => {
           const position = index + 1;
           // In a real app, you would compare user IDs or a unique identifier
-          // For this example, let's say position 4 is the current user
           const isCurrentUser = position === userPosition;
+          const steps = getStepCount(position);
 
           return (
             <FriendItem
               key={index}
               user={user!}
               action={getPositionIndicator(position, isCurrentUser)}
-              descriptionType="ageGender"
+              descriptionType="value"
+              descriptionValue={getStepsDisplay(steps)}
               gradientColors={
                 position <= 3 ? POSITION_GRADIENTS[position] : undefined
               }

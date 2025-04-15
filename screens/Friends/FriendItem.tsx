@@ -107,12 +107,14 @@ const FriendItem = ({
   descriptionType = "steps",
   backgroundColor,
   gradientColors,
+  descriptionValue,
 }: {
   user: User | FriendWithActivityResponseDto;
   action?: React.ReactNode;
-  descriptionType?: "steps" | "ageGender";
+  descriptionType?: "steps" | "ageGender" | "value";
   backgroundColor?: string;
   gradientColors?: string[];
+  descriptionValue?: React.ReactNode;
 }) => {
   const { formatMessage } = useIntl();
 
@@ -167,10 +169,12 @@ const FriendItem = ({
                 ),
               })}
             </BaseText>
-          ) : (
+          ) : descriptionType === "ageGender" ? (
             <BaseText size="xs" color={70}>
               {ageAndGender()}
             </BaseText>
+          ) : (
+            descriptionValue
           )}
         </UserDetails>
       </UserInfo>

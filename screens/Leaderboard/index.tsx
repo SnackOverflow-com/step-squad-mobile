@@ -9,6 +9,7 @@ import messages from "./messages";
 import Switcher, { SwitcherOption } from "@/components/ui/Switcher";
 import LeaderboardList from "./LeaderboardList";
 import { LeaderboardType } from "@/types/leaderboard/leaderboard-type";
+
 const Container = styled(ScrollView).attrs({
   contentContainerStyle: {
     gap: 16,

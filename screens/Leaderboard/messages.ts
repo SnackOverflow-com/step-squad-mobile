@@ -9,6 +9,18 @@ const messages = defineMessages({
     id: "screens.leaderboard.userPosition",
     defaultMessage: "Your position: {position}{suffix}",
   },
+  youIndicator: {
+    id: "screens.leaderboard.youIndicator",
+    defaultMessage: "(you)",
+  },
+  stepsText: {
+    id: "screens.leaderboard.stepsText",
+    defaultMessage: "{steps} steps",
+  },
+  positionPrefix: {
+    id: "screens.leaderboard.positionPrefix",
+    defaultMessage: "#{position}",
+  },
 });
 
 export default messages;
