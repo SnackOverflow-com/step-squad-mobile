@@ -19,6 +19,7 @@ import {
   getFriendsWithActivities,
   removeFriend,
 } from "@/services/api/friend";
+import { DefaultTheme } from "styled-components";
 
 const Container = styled(View)`
   flex: 1;
@@ -34,6 +35,10 @@ const EmptyStateContainer = styled(View)`
   flex: 1;
   justify-content: center;
   align-items: center;
+`;
+
+const StyledTrashIcon = styled(TrashIcon)`
+  color: ${({ theme }: { theme: DefaultTheme }) => theme.text};
 `;
 
 const FriendList = () => {
@@ -141,7 +146,7 @@ const FriendList = () => {
 
                 <Dropdown.Item
                   label={formatMessage(messages.removeFriend)}
-                  icon={<TrashIcon />}
+                  icon={<StyledTrashIcon />}
                   onPress={() => handleRemoveFriend(friend.id)}
                 />
               </Dropdown>
