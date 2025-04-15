@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { View, TouchableOpacity } from "react-native";
 import styled, { useTheme } from "styled-components/native";
-import { useIntl } from "react-intl";
 import { Plus, Minus } from "lucide-react-native";
 import { DefaultTheme } from "styled-components";
 
@@ -57,11 +56,10 @@ const IconButton = styled(TouchableOpacity)`
 
 const WaterIntakeSection = () => {
   const theme = useTheme();
-  const { formatMessage } = useIntl();
 
   // State for water tracking
   const [currentWaterIntake, setCurrentWaterIntake] = useState(1200); // 1.2L
-  const [incrementAmount, setIncrementAmount] = useState(100); // 100ml
+  const [incrementAmount] = useState(100); // 100ml
   const waterGoal = 2000; // 2L
   const fillPercentage = currentWaterIntake / waterGoal;
 
