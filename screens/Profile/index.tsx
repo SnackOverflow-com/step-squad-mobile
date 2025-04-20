@@ -8,13 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import SafeAreaWrapper from "@/components/SafeAreaWrapper";
-import {
-  Button,
-  BaseText,
-  TextInput,
-  MultiSelectDropdown,
-  useToast,
-} from "@/components/ui";
+import { Button, BaseText, TextInput, Select, useToast } from "@/components/ui";
 import Header from "@/components/MainHeader";
 import { Gender, UserUpdateRequest } from "@/types";
 import { useThemeContext, useUser } from "@/hooks";
@@ -230,10 +224,10 @@ const ProfileScreen = () => {
             control={control}
             name="gender"
             render={({ field: { onChange, value } }) => (
-              <MultiSelectDropdown
+              <Select
                 label={formatMessage(messages.gender)}
                 value={value}
-                items={Object.keys(Gender).map((gender) => ({
+                options={Object.keys(Gender).map((gender) => ({
                   label: formatMessage({
                     id: `profile.gender.${gender.toLowerCase()}`,
                     defaultMessage:
@@ -243,7 +237,10 @@ const ProfileScreen = () => {
                   value: gender,
                 }))}
                 onValueChange={onChange}
-                placeholder="Select gender"
+                placeholder={formatMessage({
+                  id: "profile.gender.placeholder",
+                  defaultMessage: "Select gender",
+                })}
                 error={
                   errors.gender ? String(errors.gender.message) : undefined
                 }

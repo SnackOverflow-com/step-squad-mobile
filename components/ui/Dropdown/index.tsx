@@ -15,8 +15,10 @@ import {
   Platform,
   Pressable,
   StatusBar,
+  StyleProp,
   UIManager,
   View,
+  ViewStyle,
 } from "react-native";
 import styled from "styled-components/native";
 import { DefaultTheme } from "styled-components";
@@ -80,6 +82,7 @@ interface DropdownContextType {
     height: number;
   } | null;
   position: "top" | "bottom" | "left" | "right";
+  isFullWidth?: boolean;
 }
 
 const DropdownContext = createContext<DropdownContextType | undefined>(
@@ -174,12 +177,14 @@ interface DropdownProps {
   children: ReactNode;
   position?: "top" | "bottom" | "left" | "right";
   initialState?: boolean;
+  isFullWidth?: boolean;
 }
 
 const Dropdown = ({
   children,
   position = "bottom",
   initialState = false,
+  isFullWidth = false,
 }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(initialState);
   const [anchorPosition, setAnchorPosition] = useState<{
@@ -221,7 +226,7 @@ const Dropdown = ({
       <View style={{ position: "relative" }}>
         {otherContent}
 
-        <DropdownMenu items={items} />
+        <DropdownMenu items={items} isFullWidth={isFullWidth} />
       </View>
     </DropdownContext.Provider>
   );
@@ -241,9 +246,10 @@ const getStatusBarHeight = () => {
 // Dropdown Menu component (internal)
 interface DropdownMenuProps {
   items: React.ReactNode[];
+  isFullWidth?: boolean;
 }
 
-const DropdownMenu = ({ items }: DropdownMenuProps) => {
+const DropdownMenu = ({ items, isFullWidth = false }: DropdownMenuProps) => {
   const { isOpen, close, anchorPosition, position } = useDropdownContext();
   const screenWidth = Dimensions.get("window").width;
   const defaultPosition = { top: 100, right: 20 };
@@ -265,24 +271,28 @@ const DropdownMenu = ({ items }: DropdownMenuProps) => {
           position: "absolute" as const,
           top: adjustedY + height + 8,
           right: screenWidth - (x + width),
+          left: isFullWidth ? screenWidth - (x + width) : undefined,
         };
       case "top":
         return {
           position: "absolute" as const,
           bottom: adjustedY - 8,
           right: screenWidth - (x + width),
+          left: isFullWidth ? screenWidth - (x + width) : undefined,
         };
       case "left":
         return {
           position: "absolute" as const,
           top: adjustedY,
           right: screenWidth - x + 8,
+          left: isFullWidth ? screenWidth - (x + width) : undefined,
         };
       case "right":
         return {
           position: "absolute" as const,
           top: adjustedY,
           left: x + width + 8,
+          right: isFullWidth ? screenWidth - (x + width) : undefined,
         };
       default:
         return defaultPosition;
@@ -316,9 +326,10 @@ const DropdownMenu = ({ items }: DropdownMenuProps) => {
 // Trigger component
 interface TriggerProps {
   children: ReactNode;
+  style?: StyleProp<ViewStyle>;
 }
 
-const Trigger = ({ children }: TriggerProps) => {
+const Trigger = ({ children, ...props }: TriggerProps) => {
   const { toggle, setAnchorPosition } = useDropdownContext();
   const triggerRef = useRef<View>(null);
 
@@ -369,6 +380,7 @@ const Trigger = ({ children }: TriggerProps) => {
         ref={triggerRef}
         onLayout={() => {}} // Empty onLayout to ensure the view is measured
         style={{ alignSelf: "flex-start" }} // Don't stretch the view
+        {...props}
       >
         {cloneElement(child, {
           ...child.props,
