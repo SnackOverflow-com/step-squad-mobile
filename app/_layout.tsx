@@ -14,6 +14,7 @@ import { ThemeProvider, useColorScheme, AuthProvider, useAuth } from "@/hooks";
 import { IntlProviderWrapper } from "@/translations/intlConfig";
 import { ReactQueryProvider } from "@/services/queryClient";
 import { ToastProvider } from "@/components/ui/Toast";
+import { ConfettiProvider } from "@/hooks/useConfetti";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -72,20 +73,22 @@ export default function RootLayout() {
               value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
             >
               <ToastProvider>
-                <AuthGuard>
-                  <Stack>
-                    <Stack.Screen
-                      name="(auth)"
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name="(tabs)"
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen name="+not-found" />
-                  </Stack>
-                  <StatusBar style="auto" />
-                </AuthGuard>
+                <ConfettiProvider>
+                  <AuthGuard>
+                    <Stack>
+                      <Stack.Screen
+                        name="(auth)"
+                        options={{ headerShown: false }}
+                      />
+                      <Stack.Screen
+                        name="(tabs)"
+                        options={{ headerShown: false }}
+                      />
+                      <Stack.Screen name="+not-found" />
+                    </Stack>
+                    <StatusBar style="auto" />
+                  </AuthGuard>
+                </ConfettiProvider>
               </ToastProvider>
             </NavigationThemeProvider>
           </AuthProvider>

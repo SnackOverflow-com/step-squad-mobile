@@ -5,7 +5,9 @@ import { Plus, Minus } from "lucide-react-native";
 import { DefaultTheme } from "styled-components";
 
 import { BaseText, CircleChart } from "@/components/ui";
+import { useToast } from "@/components/ui/Toast";
 import WaterGlass from "./WaterGlass";
+import { useConfetti } from "@/hooks/useConfetti";
 
 const Container = styled(View)`
   width: 100%;
@@ -56,6 +58,8 @@ const IconButton = styled(TouchableOpacity)`
 
 const WaterIntakeSection = () => {
   const theme = useTheme();
+  const { playConfetti } = useConfetti();
+  const toast = useToast();
 
   // State for water tracking
   const [currentWaterIntake, setCurrentWaterIntake] = useState(1200); // 1.2L
@@ -65,9 +69,17 @@ const WaterIntakeSection = () => {
 
   // Handler for incrementing water intake
   const handleIncrement = () => {
-    setCurrentWaterIntake((prev) =>
-      Math.min(prev + incrementAmount, waterGoal)
-    );
+    const newValue = Math.min(currentWaterIntake + incrementAmount, waterGoal);
+    setCurrentWaterIntake(newValue);
+
+    // Play confetti and show toast when reaching goal
+    if (newValue === waterGoal) {
+      playConfetti();
+      toast.success({
+        title: "Daily water intake reached!",
+        description: "Great job staying hydrated today!",
+      });
+    }
   };
 
   // Handler for decrementing water intake
