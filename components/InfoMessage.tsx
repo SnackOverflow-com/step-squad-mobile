@@ -39,7 +39,7 @@ const InfoMessage = ({
 
       <BaseText size="xl">{title}</BaseText>
 
-      <BaseText size="s" color={70}>
+      <BaseText size="s" color={70} style={{ textAlign: "center" }}>
         {content}
       </BaseText>
       {action}

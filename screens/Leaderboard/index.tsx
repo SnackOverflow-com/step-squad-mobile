@@ -4,17 +4,11 @@ import styled from "styled-components/native";
 import { useIntl } from "react-intl";
 
 import SafeAreaWrapper from "@/components/SafeAreaWrapper";
-import { Switcher, SwitcherOption } from "@/components/ui";
 import Header from "@/components/MainHeader";
 import messages from "./messages";
-import InviteBanner from "./InviteBanner";
-import FriendList from "./FriendList";
-import AddFriends from "./AddFriends";
-
-const tabOptions: SwitcherOption[] = [
-  { value: "friends", label: "My friends" },
-  { value: "addFriends", label: "Add friends" },
-];
+import Switcher, { SwitcherOption } from "@/components/ui/Switcher";
+import LeaderboardList from "./LeaderboardList";
+import { LeaderboardType } from "@/types/leaderboard/leaderboard-type";
 
 const Container = styled(ScrollView).attrs({
   contentContainerStyle: {
@@ -26,16 +20,20 @@ const Container = styled(ScrollView).attrs({
   padding: 16px;
 `;
 
-const FriendsScreen = () => {
+const tabOptions: SwitcherOption[] = [
+  { value: "DAILY", label: "Daily" },
+  { value: "WEEKLY", label: "Weekly" },
+  { value: "MONTHLY", label: "Monthly" },
+];
+
+const LeaderboardScreen = () => {
   const { formatMessage } = useIntl();
-  const [selectedTab, setSelectedTab] = useState<string>("friends");
+  const [selectedTab, setSelectedTab] = useState<string>("DAILY");
 
   return (
     <SafeAreaWrapper>
       <Container>
         <Header title={formatMessage(messages.title)} />
-
-        <InviteBanner />
 
         <Switcher
           options={tabOptions}
@@ -43,11 +41,10 @@ const FriendsScreen = () => {
           onChange={setSelectedTab}
         />
 
-        {selectedTab === "friends" && <FriendList />}
-        {selectedTab === "addFriends" && <AddFriends />}
+        <LeaderboardList type={selectedTab as LeaderboardType} />
       </Container>
     </SafeAreaWrapper>
   );
 };
 
-export default FriendsScreen;
+export default LeaderboardScreen;

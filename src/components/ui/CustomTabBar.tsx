@@ -1,13 +1,14 @@
 import React from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { useRouter, useSegments } from "expo-router";
-import { Home, User, Users } from "lucide-react-native";
+import { Home, Users, Trophy, Droplet } from "lucide-react-native";
 import { useThemeContext, lightTheme } from "@/hooks";
 
 const tabs = [
   { name: "index", icon: Home, path: "/" },
   { name: "friends", icon: Users, path: "/friends" },
-  { name: "profile", icon: User, path: "/profile" },
+  { name: "leaderboard", icon: Trophy, path: "/leaderboard" },
+  { name: "water", icon: Droplet, path: "/water" },
 ];
 
 // Define a function that creates the styles based on the theme
