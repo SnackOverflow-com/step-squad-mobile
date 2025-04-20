@@ -11,7 +11,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { BaseText, Button, Dropdown, useToast } from "@/components/ui";
 import InfoMessage from "@/components/InfoMessage";
-import { useThemeContext } from "@/hooks";
+import { useThemeContext, useUser } from "@/hooks";
 import FriendItem from "./FriendItem";
 import messages from "./messages";
 import {
@@ -44,6 +44,7 @@ const StyledTrashIcon = styled(TrashIcon)`
 const FriendList = () => {
   const { formatMessage } = useIntl();
   const { theme } = useThemeContext();
+  const { user } = useUser();
   const queryClient = useQueryClient();
   const toast = useToast();
 
@@ -53,7 +54,7 @@ const FriendList = () => {
     isLoading,
     isError,
   } = useQuery<FriendWithActivityResponseDto[]>({
-    queryKey: ["friends"],
+    queryKey: ["friends", user?.id],
     queryFn: getFriendsWithActivities,
   });
 

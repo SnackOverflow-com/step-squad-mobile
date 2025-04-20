@@ -13,6 +13,7 @@ import { getActivity, updateActivity } from "@/services/api/activity";
 import { ActivityType } from "@/types/activity/activity-type";
 import { ActivityUpdateRequest } from "@/types/activity/activity-update-request";
 import { Activity } from "@/types/activity/activity";
+import { useUser } from "@/hooks";
 
 const Container = styled(View)`
   width: 100%;
@@ -62,6 +63,7 @@ const IconButton = styled(TouchableOpacity)`
 `;
 
 const WaterIntakeSection = () => {
+  const { user } = useUser();
   const theme = useTheme();
   const { playConfetti } = useConfetti();
   const toast = useToast();
@@ -75,7 +77,7 @@ const WaterIntakeSection = () => {
     isError,
     refetch,
   } = useQuery<Activity>({
-    queryKey: ["activity", ActivityType.WATER],
+    queryKey: ["activity", ActivityType.WATER, user?.id],
     queryFn: () => getActivity(ActivityType.WATER),
   });
 
