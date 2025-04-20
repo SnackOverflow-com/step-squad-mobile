@@ -3,11 +3,16 @@ import { View, TouchableOpacity } from "react-native";
 import styled, { useTheme } from "styled-components/native";
 import { Plus, Minus } from "lucide-react-native";
 import { DefaultTheme } from "styled-components";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { BaseText, CircleChart } from "@/components/ui";
+import { BaseText, CircleChart, Button } from "@/components/ui";
 import { useToast } from "@/components/ui/Toast";
 import WaterGlass from "./WaterGlass";
 import { useConfetti } from "@/hooks/useConfetti";
+import { getActivity, updateActivity } from "@/services/api/activity";
+import { ActivityType } from "@/types/activity/activity-type";
+import { ActivityUpdateRequest } from "@/types/activity/activity-update-request";
+import { Activity } from "@/types/activity/activity";
 
 const Container = styled(View)`
   width: 100%;
@@ -60,31 +65,96 @@ const WaterIntakeSection = () => {
   const theme = useTheme();
   const { playConfetti } = useConfetti();
   const toast = useToast();
+  const queryClient = useQueryClient();
+  const [incrementAmount] = useState(100); // 100ml increment
 
-  // State for water tracking
-  const [currentWaterIntake, setCurrentWaterIntake] = useState(1200); // 1.2L
-  const [incrementAmount] = useState(100); // 100ml
-  const waterGoal = 2000; // 2L
-  const fillPercentage = currentWaterIntake / waterGoal;
+  // Fetch water activity data
+  const {
+    data: waterActivity,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery<Activity>({
+    queryKey: ["activity", ActivityType.WATER],
+    queryFn: () => getActivity(ActivityType.WATER),
+  });
+
+  // Mutation for updating water activity
+  const updateWaterMutation = useMutation({
+    mutationFn: (updateRequest: ActivityUpdateRequest) => {
+      return updateActivity(updateRequest);
+    },
+    onSuccess: (updatedActivity) => {
+      // Invalidate and refetch queries related to this activity
+      queryClient.invalidateQueries({
+        queryKey: ["activity", ActivityType.WATER],
+      });
+
+      // Show success message if goal reached - but only when crossing the threshold
+      // Check if it's exactly at the goal or just crossed it from below
+      if (
+        waterActivity &&
+        !waterActivity.isGoalReached &&
+        updatedActivity.quantity >= updatedActivity.goal &&
+        waterActivity.quantity < updatedActivity.goal
+      ) {
+        playConfetti();
+        toast.success({
+          title: "Daily water intake reached!",
+          description: "Great job staying hydrated today!",
+        });
+      }
+    },
+    onError: (error) => {
+      toast.error({
+        title: "Error",
+        description: "Failed to update water intake",
+      });
+    },
+  });
+
+  // Calculate derived values
+  const currentWaterIntake = waterActivity?.quantity || 0;
+  const waterGoal = waterActivity?.goal || 2000; // Default to 2L if not loaded
+  const fillPercentage = Math.min(currentWaterIntake / waterGoal, 1); // Cap at 100% for visualization
 
   // Handler for incrementing water intake
   const handleIncrement = () => {
-    const newValue = Math.min(currentWaterIntake + incrementAmount, waterGoal);
-    setCurrentWaterIntake(newValue);
+    if (!waterActivity) return;
 
-    // Play confetti and show toast when reaching goal
-    if (newValue === waterGoal) {
-      playConfetti();
-      toast.success({
-        title: "Daily water intake reached!",
-        description: "Great job staying hydrated today!",
-      });
-    }
+    // Remove the maximum limit - allow users to track intake beyond the goal
+    const newValue = currentWaterIntake + incrementAmount;
+
+    // Only update if there's a change
+    if (newValue === currentWaterIntake) return;
+
+    // Ensure we're passing the correct data structure
+    const updateRequest: ActivityUpdateRequest = {
+      id: waterActivity.id,
+      date: waterActivity.date,
+      quantity: newValue,
+    };
+
+    updateWaterMutation.mutate(updateRequest);
   };
 
   // Handler for decrementing water intake
   const handleDecrement = () => {
-    setCurrentWaterIntake((prev) => Math.max(prev - incrementAmount, 0));
+    if (!waterActivity) return;
+
+    const newValue = Math.max(currentWaterIntake - incrementAmount, 0);
+
+    // Only update if there's a change
+    if (newValue === currentWaterIntake) return;
+
+    // Ensure we're passing the correct data structure
+    const updateRequest: ActivityUpdateRequest = {
+      id: waterActivity.id,
+      date: waterActivity.date,
+      quantity: newValue,
+    };
+
+    updateWaterMutation.mutate(updateRequest);
   };
 
   const renderChartContent = () => (
@@ -99,9 +169,46 @@ const WaterIntakeSection = () => {
       <InfoText size="s" style={{ color: theme.textSecondary }}>
         {(currentWaterIntake / 1000).toFixed(1)}L /{" "}
         {(waterGoal / 1000).toFixed(1)}L
+        {currentWaterIntake > waterGoal && (
+          <BaseText size="s" style={{ color: theme.success }}>
+            {" "}
+            (+{((currentWaterIntake - waterGoal) / 1000).toFixed(1)}L)
+          </BaseText>
+        )}
       </InfoText>
     </ChartContent>
   );
+
+  if (isLoading) {
+    return (
+      <Container style={{ backgroundColor: theme.card }}>
+        <ChartContainer>
+          <ChartContent>
+            <BaseText size="s" style={{ color: theme.textSecondary }}>
+              Loading water intake data...
+            </BaseText>
+          </ChartContent>
+        </ChartContainer>
+      </Container>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Container style={{ backgroundColor: theme.card }}>
+        <ChartContainer>
+          <ChartContent>
+            <BaseText size="s" style={{ color: theme.error.main }}>
+              Failed to load water intake data
+            </BaseText>
+            <Button variant="primary" size="s" onPress={() => refetch()}>
+              Retry
+            </Button>
+          </ChartContent>
+        </ChartContainer>
+      </Container>
+    );
+  }
 
   return (
     <Container style={{ backgroundColor: theme.card }}>
@@ -116,7 +223,10 @@ const WaterIntakeSection = () => {
       </ChartContainer>
 
       <ControlsContainer>
-        <IconButton onPress={handleDecrement}>
+        <IconButton
+          onPress={handleDecrement}
+          disabled={updateWaterMutation.isPending}
+        >
           <Minus size={24} color={theme.text} />
         </IconButton>
 
@@ -126,7 +236,10 @@ const WaterIntakeSection = () => {
           </BaseText>
         </AmountDisplay>
 
-        <IconButton onPress={handleIncrement}>
+        <IconButton
+          onPress={handleIncrement}
+          disabled={updateWaterMutation.isPending}
+        >
           <Plus size={24} color={theme.text} />
         </IconButton>
       </ControlsContainer>
