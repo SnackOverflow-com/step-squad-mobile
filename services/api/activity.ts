@@ -29,7 +29,7 @@ export const updateActivity = async (
   activityUpdateRequest: ActivityUpdateRequest
 ): Promise<Activity> => {
   try {
-    const response = await apiClient.put<Activity>(
+    const response = await apiClient.patch<Activity>(
       `/activity`,
       activityUpdateRequest
     );
