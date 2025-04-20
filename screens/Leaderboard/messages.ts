@@ -21,6 +21,22 @@ const messages = defineMessages({
     id: "screens.leaderboard.positionPrefix",
     defaultMessage: "#{position}",
   },
+  errorTitle: {
+    id: "screens.leaderboard.errorTitle",
+    defaultMessage: "Error loading leaderboard",
+  },
+  errorContent: {
+    id: "screens.leaderboard.errorContent",
+    defaultMessage: "We couldn't load the leaderboard. Please try again later.",
+  },
+  empty: {
+    id: "screens.leaderboard.empty",
+    defaultMessage: "No data available",
+  },
+  emptyContent: {
+    id: "screens.leaderboard.emptyContent",
+    defaultMessage: "There are no steps recorded for this period yet.",
+  },
 });
 
 export default messages;

@@ -1,12 +1,14 @@
 import React from "react";
-import { View, Image } from "react-native";
+import { View, Image, ActivityIndicator } from "react-native";
 import styled from "styled-components/native";
 import { useIntl } from "react-intl";
+import { useQuery } from "@tanstack/react-query";
+
 import { LeaderboardType } from "@/types/leaderboard/leaderboard-type";
 import { getOrdinalSuffix } from "@/services/utils/string";
 import messages from "./messages";
 import { BaseText } from "@/components/ui";
-import { Footprints, Trophy } from "lucide-react-native";
+import { Footprints, Trophy, UserRoundSearch } from "lucide-react-native";
 import { DefaultTheme } from "styled-components";
 import FriendItem from "../Friends/FriendItem";
 import { useThemeContext, useUser } from "@/hooks";
@@ -15,6 +17,12 @@ import {
   LIGHT_MODE_GRADIENTS,
   POSITION_IMAGES,
 } from "./constants";
+import {
+  getLeaderboard,
+  LeaderboardEntryDto,
+} from "@/services/api/leaderboard";
+import InfoMessage from "@/components/InfoMessage";
+import { Gender } from "@/types/user/gender";
 
 const Container = styled(View)`
   flex: 1;
@@ -65,6 +73,12 @@ const YouIndicator = styled(BaseText)`
   font-weight: 500;
 `;
 
+const EmptyStateContainer = styled(View)`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+`;
+
 interface LeaderboardListProps {
   type: LeaderboardType;
 }
@@ -72,10 +86,17 @@ interface LeaderboardListProps {
 const LeaderboardList = ({ type }: LeaderboardListProps) => {
   const { formatMessage } = useIntl();
   const { user } = useUser();
-  const { themeMode } = useThemeContext();
+  const { theme, themeMode } = useThemeContext();
 
-  // Example user position - this would come from your data in a real implementation
-  const userPosition = 2;
+  // Fetch leaderboard data
+  const {
+    data: leaderboard,
+    isLoading,
+    isError,
+  } = useQuery<LeaderboardEntryDto[]>({
+    queryKey: ["leaderboard", type],
+    queryFn: () => getLeaderboard(type),
+  });
 
   // Select gradients based on theme
   const POSITION_GRADIENTS =
@@ -124,46 +145,84 @@ const LeaderboardList = ({ type }: LeaderboardListProps) => {
     </StepsContainer>
   );
 
-  // Example step counts for each user in the leaderboard
-  // In a real app, this would come from your API or database
-  const getStepCount = (position: number) => {
-    // Create some sample data that decreases with position
-    const baseSteps = 15000;
-    const steps = Math.floor(
-      baseSteps - (position - 1) * 500 + Math.random() * 200
+  // Show loading state
+  if (isLoading) {
+    return (
+      <EmptyStateContainer>
+        <ActivityIndicator size="large" color={theme.primary.main} />
+      </EmptyStateContainer>
     );
-    return steps;
-  };
+  }
+
+  // Show error state
+  if (isError) {
+    return (
+      <EmptyStateContainer>
+        <InfoMessage
+          icon={<Trophy />}
+          title={formatMessage(messages.errorTitle)}
+          content={formatMessage(messages.errorContent)}
+        />
+      </EmptyStateContainer>
+    );
+  }
+
+  const hasNoData = !leaderboard || leaderboard.length === 0;
+
+  if (hasNoData) {
+    return (
+      <EmptyStateContainer>
+        <InfoMessage
+          icon={<UserRoundSearch />}
+          title={formatMessage(messages.empty)}
+          content={formatMessage(messages.emptyContent)}
+        />
+      </EmptyStateContainer>
+    );
+  }
+
+  // Find current user's position from the data
+  const currentUserEntry = leaderboard.find((entry) => entry.id === user?.id);
+  const userPosition = currentUserEntry?.position || 0;
 
   return (
     <Container>
-      <PositionWrapper>
-        <StyledTrophyIcon size={16} />
+      {userPosition > 0 && (
+        <PositionWrapper>
+          <StyledTrophyIcon size={16} />
 
-        <BaseText size="s">
-          {formatMessage(messages.userPosition, {
-            position: userPosition,
-            suffix: getOrdinalSuffix(userPosition),
-          })}
-        </BaseText>
-      </PositionWrapper>
+          <BaseText size="s">
+            {formatMessage(messages.userPosition, {
+              position: userPosition,
+              suffix: getOrdinalSuffix(userPosition),
+            })}
+          </BaseText>
+        </PositionWrapper>
+      )}
 
       <ListContainer>
-        {[...Array(10)].map((_, index) => {
-          const position = index + 1;
-          // In a real app, you would compare user IDs or a unique identifier
-          const isCurrentUser = position === userPosition;
-          const steps = getStepCount(position);
+        {leaderboard.map((entry) => {
+          const isCurrentUser = entry.id === user?.id;
 
           return (
             <FriendItem
-              key={index}
-              user={user!}
-              action={getPositionIndicator(position, isCurrentUser)}
+              key={entry.id}
+              user={{
+                id: entry.id,
+                firstName: entry.firstName,
+                lastName: entry.lastName,
+                email: entry.email,
+                gender: entry.gender as Gender,
+                isFriend: false,
+                activities: [],
+              }}
+              action={getPositionIndicator(entry.position, isCurrentUser)}
               descriptionType="value"
-              descriptionValue={getStepsDisplay(steps)}
+              descriptionValue={getStepsDisplay(entry.totalSteps)}
               gradientColors={
-                position <= 3 ? POSITION_GRADIENTS[position] : undefined
+                entry.position <= 3
+                  ? POSITION_GRADIENTS[entry.position]
+                  : undefined
               }
             />
           );

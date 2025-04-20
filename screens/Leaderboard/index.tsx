@@ -21,14 +21,14 @@ const Container = styled(ScrollView).attrs({
 `;
 
 const tabOptions: SwitcherOption[] = [
-  { value: "daily", label: "Daily" },
-  { value: "weekly", label: "Weekly" },
-  { value: "monthly", label: "Monthly" },
+  { value: "DAILY", label: "Daily" },
+  { value: "WEEKLY", label: "Weekly" },
+  { value: "MONTHLY", label: "Monthly" },
 ];
 
 const LeaderboardScreen = () => {
   const { formatMessage } = useIntl();
-  const [selectedTab, setSelectedTab] = useState<string>("daily");
+  const [selectedTab, setSelectedTab] = useState<string>("DAILY");
 
   return (
     <SafeAreaWrapper>

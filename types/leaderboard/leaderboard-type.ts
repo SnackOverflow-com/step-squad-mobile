@@ -1,1 +1,1 @@
-export type LeaderboardType = "daily" | "weekly" | "monthly";
+export type LeaderboardType = "DAILY" | "WEEKLY" | "MONTHLY";
