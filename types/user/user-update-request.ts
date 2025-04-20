@@ -1,4 +1,5 @@
 import { Gender } from "@/types/user/gender";
+import { ActivityDifficulty } from "@/types/activity/activity-difficulty";
 
 export interface UserUpdateRequest {
   id: number | null;
@@ -6,4 +7,5 @@ export interface UserUpdateRequest {
   lastName: string;
   age?: number;
   gender?: Gender;
+  difficulty: ActivityDifficulty;
 }
