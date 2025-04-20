@@ -10,4 +10,5 @@ export { default as Switcher } from "./Switcher";
 export type { SwitcherOption } from "./Switcher";
 export { default as Toast, ToastProvider, useToast } from "./Toast";
 export type { ToastProps, ToastVariant } from "./Toast";
-export { default as MultiSelectDropdown } from "./MultiselectDropdown";
+export { default as Select } from "./Select";
+export type { SelectOption } from "./Select";

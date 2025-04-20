@@ -35,6 +35,22 @@ export const messages = {
       defaultMessage: "Unspecified",
     },
   },
+  difficulty: {
+    id: "profile.difficulty",
+    defaultMessage: "Preferred difficulty",
+    easy: {
+      id: "profile.difficulty.easy",
+      defaultMessage: "Easy",
+    },
+    medium: {
+      id: "profile.difficulty.medium",
+      defaultMessage: "Medium",
+    },
+    hard: {
+      id: "profile.difficulty.hard",
+      defaultMessage: "Hard",
+    },
+  },
   toggleTheme: {
     id: "profile.toggleTheme",
     defaultMessage: "Toggle theme",

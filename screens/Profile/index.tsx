@@ -8,15 +8,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import SafeAreaWrapper from "@/components/SafeAreaWrapper";
-import {
-  Button,
-  BaseText,
-  TextInput,
-  MultiSelectDropdown,
-  useToast,
-} from "@/components/ui";
+import { Button, BaseText, TextInput, Select, useToast } from "@/components/ui";
 import Header from "@/components/MainHeader";
-import { Gender, UserUpdateRequest } from "@/types";
+import { Gender, UserUpdateRequest, ActivityDifficulty } from "@/types";
 import { useThemeContext, useUser } from "@/hooks";
 import { updateUser } from "@/services/api/user";
 import { messages } from "./messages";
@@ -31,7 +25,8 @@ const profileSchema = z.object({
     .min(1, messages.lastName.minLength)
     .max(30, messages.lastName.maxLength),
   age: z.number().min(0).max(150).optional().or(z.literal("")),
-  gender: z.enum(["MALE", "FEMALE", "UNSPECIFIED"]).optional(),
+  gender: z.nativeEnum(Gender).optional(),
+  difficulty: z.nativeEnum(ActivityDifficulty),
 });
 
 type ProfileFormValues = z.infer<typeof profileSchema>;
@@ -76,15 +71,32 @@ const ProfileScreen = () => {
     handleSubmit,
     formState: { errors },
     setError,
-    reset,
   } = useForm<ProfileFormValues>({
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      age: undefined,
-      gender: "UNSPECIFIED",
-    },
+    defaultValues: user
+      ? {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          age: user.age,
+          gender: user.gender ?? Gender.UNSPECIFIED,
+          difficulty: user.difficulty ?? ActivityDifficulty.MEDIUM,
+        }
+      : {
+          firstName: "",
+          lastName: "",
+          age: undefined,
+          gender: Gender.UNSPECIFIED,
+          difficulty: ActivityDifficulty.MEDIUM,
+        },
     resolver: zodResolver(profileSchema),
+    values: user
+      ? {
+          firstName: user.firstName,
+          lastName: user.lastName,
+          age: user.age,
+          gender: user.gender ?? Gender.UNSPECIFIED,
+          difficulty: user.difficulty ?? ActivityDifficulty.MEDIUM,
+        }
+      : undefined,
   });
 
   const updateUserMutation = useMutation({
@@ -109,23 +121,15 @@ const ProfileScreen = () => {
     },
   });
 
-  React.useEffect(() => {
-    if (user) {
-      reset({
-        id: user.id ?? null,
-        firstName: user.firstName ?? "",
-        lastName: user.lastName ?? "",
-        age: user.age ?? undefined,
-        gender: user.gender ?? "UNSPECIFIED",
-      } as UserUpdateRequest);
-    }
-  }, [user, reset]);
-
   const onSubmit = async (formData: ProfileFormValues) => {
-    const userUpdateRequest = {
-      ...formData,
+    const userUpdateRequest: UserUpdateRequest = {
+      id: user?.id ?? null,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
       age: formData.age ? Number(formData.age) : undefined,
-    } as UserUpdateRequest;
+      gender: formData.gender,
+      difficulty: formData.difficulty,
+    };
 
     updateUserMutation.mutate(userUpdateRequest);
   };
@@ -153,6 +157,21 @@ const ProfileScreen = () => {
       </SafeAreaWrapper>
     );
   }
+
+  const difficultyOptions = [
+    {
+      label: formatMessage(messages.difficulty.easy),
+      value: ActivityDifficulty.EASY,
+    },
+    {
+      label: formatMessage(messages.difficulty.medium),
+      value: ActivityDifficulty.MEDIUM,
+    },
+    {
+      label: formatMessage(messages.difficulty.hard),
+      value: ActivityDifficulty.HARD,
+    },
+  ];
 
   return (
     <SafeAreaWrapper>
@@ -230,10 +249,10 @@ const ProfileScreen = () => {
             control={control}
             name="gender"
             render={({ field: { onChange, value } }) => (
-              <MultiSelectDropdown
+              <Select
                 label={formatMessage(messages.gender)}
                 value={value}
-                items={Object.keys(Gender).map((gender) => ({
+                options={Object.values(Gender).map((gender) => ({
                   label: formatMessage({
                     id: `profile.gender.${gender.toLowerCase()}`,
                     defaultMessage:
@@ -243,9 +262,34 @@ const ProfileScreen = () => {
                   value: gender,
                 }))}
                 onValueChange={onChange}
-                placeholder="Select gender"
+                placeholder={formatMessage({
+                  id: "profile.gender.placeholder",
+                  defaultMessage: "Select gender",
+                })}
                 error={
                   errors.gender ? String(errors.gender.message) : undefined
+                }
+              />
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="difficulty"
+            render={({ field: { onChange, value } }) => (
+              <Select
+                label={formatMessage(messages.difficulty)}
+                value={value}
+                options={difficultyOptions}
+                onValueChange={onChange}
+                placeholder={formatMessage({
+                  id: "profile.difficulty.placeholder",
+                  defaultMessage: "Select difficulty",
+                })}
+                error={
+                  errors.difficulty
+                    ? String(errors.difficulty.message)
+                    : undefined
                 }
               />
             )}

@@ -1,6 +1,6 @@
 import apiClient from "./client";
 import { LeaderboardType } from "@/types/leaderboard/leaderboard-type";
-
+import { ActivityDifficulty } from "@/types/activity/activity-difficulty";
 export interface LeaderboardEntryDto {
   id: number;
   firstName: string;
@@ -10,6 +10,7 @@ export interface LeaderboardEntryDto {
   gender: string;
   totalSteps: number;
   position: number;
+  difficulty: ActivityDifficulty;
 }
 
 export const getLeaderboard = async (

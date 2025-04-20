@@ -23,6 +23,7 @@ import {
 } from "@/services/api/leaderboard";
 import InfoMessage from "@/components/InfoMessage";
 import { Gender } from "@/types/user/gender";
+import { ActivityDifficulty } from "@/types/activity/activity-difficulty";
 
 const Container = styled(View)`
   flex: 1;
@@ -214,6 +215,7 @@ const LeaderboardList = ({ type }: LeaderboardListProps) => {
                 email: entry.email,
                 gender: entry.gender as Gender,
                 isFriend: false,
+                difficulty: entry.difficulty as ActivityDifficulty,
                 activities: [],
               }}
               action={getPositionIndicator(entry.position, isCurrentUser)}

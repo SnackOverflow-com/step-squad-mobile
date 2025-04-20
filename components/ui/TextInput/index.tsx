@@ -154,7 +154,7 @@ const TextInput = ({
 
   return (
     <TouchableWithoutFeedback onPress={handleOutsidePress}>
-      <Container>
+      <Container {...props}>
         {label && (
           <Label
             state={inputState}
