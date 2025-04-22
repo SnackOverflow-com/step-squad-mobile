@@ -234,9 +234,10 @@ const ProfileScreen = () => {
                   label={formatMessage(messages.age)}
                   placeholder="Enter your age"
                   value={value?.toString() ?? ""}
-                  onChangeText={(text) =>
-                    onChange(text === "" ? "" : Number(text))
-                  }
+                  onChangeText={(text) => {
+                    const numericText = text.replace(/[^0-9]/g, "");
+                    onChange(numericText === "" ? "" : Number(numericText));
+                  }}
                   onBlur={onBlur}
                   keyboardType="numeric"
                   error={errors.age ? String(errors.age.message) : undefined}
