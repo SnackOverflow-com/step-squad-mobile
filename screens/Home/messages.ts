@@ -13,6 +13,10 @@ const messages = defineMessages({
     id: "home.stepGoal",
     defaultMessage: "Step goal: {goal}",
   },
+  historicalSteps: {
+    id: "home.historicalSteps",
+    defaultMessage: "Steps on {date}",
+  },
   requestPermission: {
     id: "home.requestPermission",
     defaultMessage: "Request step counting permission",

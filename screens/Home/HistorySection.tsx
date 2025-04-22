@@ -52,10 +52,12 @@ const getEmoji = (value: number): string => {
 
 interface HistorySectionProps {
   activityType?: ActivityType;
+  onSelectDay?: (day: string, activity: ActivityResponse) => void;
 }
 
 const HistorySection = ({
   activityType = ActivityType.STEPS,
+  onSelectDay,
 }: HistorySectionProps) => {
   const scrollViewRef = useRef<ScrollView>(null);
 
@@ -97,7 +99,10 @@ const HistorySection = ({
 
   const handleHistoryItemPress = (item: ActivityResponse) => {
     setSelectedDay(item.date);
-    console.log("item", item);
+    // Call the parent callback to update the main UI
+    if (onSelectDay) {
+      onSelectDay(item.date, item);
+    }
   };
 
   if (!history) return null;
