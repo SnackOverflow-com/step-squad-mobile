@@ -3,6 +3,13 @@ import React, { useRef } from "react";
 import { View, ScrollView } from "react-native";
 import { css, DefaultTheme } from "styled-components";
 import styled from "styled-components/native";
+import { useQuery } from "@tanstack/react-query";
+import { FormattedDate } from "react-intl";
+
+import { getActivityHistory } from "@/services/api/activity";
+import { ActivityType } from "@/types/activity/activity-type";
+import { ActivityTimeRange } from "@/types/activity/activity-time-range";
+import { ActivityResponse } from "@/types/activity/activity-response";
 
 const Container = styled.ScrollView.attrs({
   horizontal: true,
@@ -28,8 +35,72 @@ const HistoryButton = styled(Button)<{ $isSelected: boolean }>`
     `}
 `;
 
-const HistorySection = () => {
+const EmptyStateText = styled.Text`
+  padding: 8px;
+  color: ${({ theme }: { theme: DefaultTheme }) => theme.textSecondary};
+  font-size: 14px;
+`;
+
+// Map of emoji suggestions based on activity value relative to goal
+const getEmoji = (value: number): string => {
+  if (value <= 0) return "😴";
+  if (value < 0.3) return "🥲";
+  if (value < 0.6) return "😊";
+  if (value < 0.9) return "😍";
+  return "🥳";
+};
+
+interface HistorySectionProps {
+  activityType?: ActivityType;
+}
+
+const HistorySection = ({
+  activityType = ActivityType.STEPS,
+}: HistorySectionProps) => {
   const scrollViewRef = useRef<ScrollView>(null);
+
+  // Format today's date as YYYY-MM-DD
+  const today = new Date().toISOString().split("T")[0]; // This gives us YYYY-MM-DD format
+  const [selectedDay, setSelectedDay] = React.useState<string | null>(today);
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["activityHistory", activityType],
+    queryFn: () => getActivityHistory(activityType, 5, ActivityTimeRange.DAYS),
+  });
+
+  const history = data?.activities;
+
+  // Handle loading, error, or empty data states
+  if (isLoading) {
+    return (
+      <View>
+        <Container>
+          {Array(5)
+            .fill(0)
+            .map((_, index) => (
+              <HistoryButton key={index} variant="outline" size="s">
+                ...
+              </HistoryButton>
+            ))}
+        </Container>
+      </View>
+    );
+  }
+
+  if (isError) {
+    return (
+      <View>
+        <EmptyStateText>Something broke!</EmptyStateText>
+      </View>
+    );
+  }
+
+  const handleHistoryItemPress = (item: ActivityResponse) => {
+    setSelectedDay(item.date);
+    console.log("item", item);
+  };
+
+  if (!history) return null;
 
   return (
     <View>
@@ -39,25 +110,24 @@ const HistorySection = () => {
           scrollViewRef.current?.scrollToEnd({ animated: false });
         }}
       >
-        <HistoryButton variant="outline" size="s">
-          🥲 Mon 13
-        </HistoryButton>
+        {history.map((item) => {
+          const date = new Date(item.date);
+          const emoji = getEmoji(item.quantity);
+          const isSelected = item.date === selectedDay;
 
-        <HistoryButton variant="outline" size="s">
-          😍 Mon 14
-        </HistoryButton>
-
-        <HistoryButton variant="outline" size="s">
-          🥶 Mon 15
-        </HistoryButton>
-
-        <HistoryButton variant="outline" size="s">
-          🥳 Mon 16
-        </HistoryButton>
-
-        <HistoryButton $isSelected={true} variant="outline" size="s">
-          🥳 Mon 17
-        </HistoryButton>
+          return (
+            <HistoryButton
+              key={item.date}
+              $isSelected={isSelected}
+              variant="outline"
+              size="s"
+              onPress={() => handleHistoryItemPress(item)}
+            >
+              {emoji}{" "}
+              <FormattedDate value={date} weekday="short" day="numeric" />
+            </HistoryButton>
+          );
+        })}
       </Container>
     </View>
   );
