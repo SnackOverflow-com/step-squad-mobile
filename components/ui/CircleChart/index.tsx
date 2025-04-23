@@ -57,8 +57,9 @@ const CircleChart = ({
 
   // Calculate stroke-dashoffset based on value
   const animatedProps = useAnimatedProps(() => {
-    const strokeDashoffset =
-      circumference - (progressValue.value / maxValue) * circumference;
+    // Avoid division by zero - if maxValue is 0, the progress is 0
+    const progress = maxValue <= 0 ? 0 : progressValue.value / maxValue;
+    const strokeDashoffset = circumference - progress * circumference;
     return {
       strokeDashoffset,
     };
@@ -74,8 +75,8 @@ const CircleChart = ({
   useEffect(() => {
     // Only animate if we have valid dimensions
     if (radius > 0) {
-      // Ensure value is capped at the maxValue
-      const cappedValue = Math.min(Math.max(0, value), maxValue);
+      // Ensure value is capped at the maxValue and not less than 0
+      const cappedValue = Math.min(Math.max(0, value), maxValue || 1); // Use 1 as fallback if maxValue is 0
       progressValue.value = withTiming(cappedValue, { duration: 800 });
     }
   }, [value, maxValue, progressValue, radius]);
