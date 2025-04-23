@@ -1,15 +1,16 @@
 import { Button } from "@/components/ui";
-import React, { useRef } from "react";
-import { View, ScrollView } from "react-native";
+import React from "react";
+import { View } from "react-native";
 import { css, DefaultTheme } from "styled-components";
 import styled from "styled-components/native";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { FormattedDate } from "react-intl";
 
 import { getActivityHistory } from "@/services/api/activity";
 import { ActivityType } from "@/types/activity/activity-type";
 import { ActivityTimeRange } from "@/types/activity/activity-time-range";
 import { ActivityResponse } from "@/types/activity/activity-response";
+import { ActivityHistoryResponse } from "@/types/activity/activity-history-response";
 
 const Container = styled.ScrollView.attrs({
   horizontal: true,
@@ -59,15 +60,22 @@ const HistorySection = ({
   activityType = ActivityType.STEPS,
   onSelectDay,
 }: HistorySectionProps) => {
-  const scrollViewRef = useRef<ScrollView>(null);
+  const queryClient = useQueryClient();
 
   // Format today's date as YYYY-MM-DD
   const today = new Date().toISOString().split("T")[0]; // This gives us YYYY-MM-DD format
   const [selectedDay, setSelectedDay] = React.useState<string | null>(today);
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError } = useQuery<ActivityHistoryResponse>({
     queryKey: ["activityHistory", activityType],
-    queryFn: () => getActivityHistory(activityType, 5, ActivityTimeRange.DAYS),
+    queryFn: () => {
+      // First invalidate the activity query
+      queryClient.invalidateQueries({
+        queryKey: ["activity", ActivityType.STEPS],
+      });
+      // Then fetch the history data
+      return getActivityHistory(activityType, 5, ActivityTimeRange.DAYS);
+    },
   });
 
   const history = data?.activities;
@@ -109,12 +117,7 @@ const HistorySection = ({
 
   return (
     <View>
-      <Container
-        ref={scrollViewRef}
-        onContentSizeChange={() => {
-          scrollViewRef.current?.scrollToEnd({ animated: false });
-        }}
-      >
+      <Container>
         {history.map((item) => {
           const date = new Date(item.date);
           const emoji = getEmoji(item.quantity);
