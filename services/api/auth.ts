@@ -4,6 +4,8 @@ import { UserRegisterRequest } from "@/types/user/user-register-request";
 import { UserLoginRequest } from "@/types/user/user-login-request";
 import { UserLoginResponse } from "@/types/user/user-login-response";
 import { verifyStoredToken } from "../utils/jwt";
+import {ForgotPasswordRequest} from "@/types/auth/forgot-password-request";
+import {ResetPasswordRequest} from "@/types/auth/reset-password-request";
 
 /**
  * Login user with email and password
@@ -84,3 +86,33 @@ export const checkAuth = async (): Promise<boolean> => {
     return false;
   }
 };
+
+export const sendForgotPasswordEmail = async (
+    forgotPasswordRequest: ForgotPasswordRequest
+): Promise<void> => {
+  try {
+    // This is a placeholder - replace with your actual API endpoint
+    await apiClient.post<ForgotPasswordRequest>(
+        "/auth/forgot-password",
+        forgotPasswordRequest
+    );
+  } catch (error) {
+    // Re-throw the error for the caller to handle
+    throw error;
+  }
+}
+
+export const sendResetPasswordRequest = async (
+    resetPasswordRequest: ResetPasswordRequest
+): Promise<void> => {
+  try {
+    // This is a placeholder - replace with your actual API endpoint
+    await apiClient.post<ResetPasswordRequest>(
+        "/auth/reset-password",
+        resetPasswordRequest
+    );
+  } catch (error) {
+    // Re-throw the error for the caller to handle
+    throw error;
+  }
+}
