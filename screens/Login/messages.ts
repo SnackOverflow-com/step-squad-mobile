@@ -13,9 +13,17 @@ export const messages = defineMessages({
     id: "login.email",
     defaultMessage: "Email",
   },
+  emailPlaceholder: {
+    id: "login.emailPlaceholder",
+    defaultMessage: "Enter email here",
+  },
   password: {
     id: "login.password",
     defaultMessage: "Password",
+  },
+  passwordPlaceholder: {
+    id: "login.passwordPlaceholder",
+    defaultMessage: "Enter password here",
   },
   forgotPassword: {
     id: "login.forgotPassword",

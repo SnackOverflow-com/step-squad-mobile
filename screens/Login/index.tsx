@@ -119,7 +119,7 @@ const LoginScreen = () => {
               <View>
                 <TextInput
                   label={formatMessage(messages.email)}
-                  placeholder="johndoe@stepsquad.com"
+                  placeholder={formatMessage(messages.emailPlaceholder)}
                   value={value}
                   onChangeText={onChange}
                   onBlur={onBlur}
@@ -141,6 +141,7 @@ const LoginScreen = () => {
               <View>
                 <TextInput
                   label={formatMessage(messages.password)}
+                  placeholder={formatMessage(messages.passwordPlaceholder)}
                   value={value}
                   onChangeText={onChange}
                   onBlur={onBlur}
@@ -167,7 +168,7 @@ const LoginScreen = () => {
               </UnderlinedText>
             </Pressable>
 
-            <Link href="/(auth)/register" asChild>
+            <Link href="/(auth)/forgot-password" asChild>
               <Pressable>
                 <UnderlinedText size="xs">
                   {formatMessage(messages.forgotPassword)}
