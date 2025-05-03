@@ -1,6 +1,5 @@
 import React from "react";
-import { Stack, useRouter } from "expo-router";
-import { StyleSheet } from "react-native";
+import { Stack } from "expo-router";
 import styled from "styled-components/native";
 
 const Container = styled.View`
@@ -10,12 +9,6 @@ const Container = styled.View`
 `;
 
 const NotFoundScreen = () => {
-  const router = useRouter();
-
-  const handleGoHome = () => {
-    router.replace("/");
-  };
-
   return (
     <>
       <Stack.Screen options={{ title: "Oops!" }} />
@@ -25,10 +18,3 @@ const NotFoundScreen = () => {
 };
 
 export default NotFoundScreen;
-
-const styles = StyleSheet.create({
-  link: {
-    marginTop: 15,
-    paddingVertical: 15,
-  },
-});

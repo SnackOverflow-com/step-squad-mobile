@@ -178,7 +178,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
     };
 
     loadSavedThemePreference();
-  }, []);
+  }, [deviceColorScheme]);
 
   // Update the theme when device preference changes, but only if not manually set
   useEffect(() => {
