@@ -70,6 +70,7 @@ apiClient.interceptors.response.use(
 
           console.log("Received 401 Unauthorized - Token expired or invalid");
         } catch (refreshError) {
+          console.error("Error refreshing token:", refreshError);
           // If anything fails, still remove the token
           await AsyncStorage.removeItem("auth_token");
           authEvents.notifyTokenExpired();
