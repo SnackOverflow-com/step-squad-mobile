@@ -1,7 +1,8 @@
 import { Slot } from "expo-router";
 import React from "react";
 import { View, StyleSheet } from "react-native";
-import { CustomTabBar } from "../../src/components/ui/CustomTabBar";
+
+import { CustomTabBar } from "@/components/ui/CustomTabBar";
 
 export default function TabLayout() {
   return (
