@@ -31,6 +31,10 @@ const StyledUserCheckIcon = styled(UserCheckIcon)`
   margin-right: 8px;
 `;
 
+const InfoMessageIcon = styled(SearchIcon)`
+  color: ${({ theme }: { theme: DefaultTheme }) => theme.info.main};
+`;
+
 const AddFriends = () => {
   const { formatMessage } = useIntl();
   const [searchQuery, setSearchQuery] = useState("");
@@ -89,7 +93,7 @@ const AddFriends = () => {
       {showEmptyState && (
         <Fragment>
           <InfoMessage
-            icon={<SearchIcon />}
+            icon={<InfoMessageIcon />}
             title={formatMessage(messages.searchTitle)}
             content={formatMessage(messages.searchContent)}
           />
@@ -98,7 +102,7 @@ const AddFriends = () => {
 
       {showNoResults && (
         <InfoMessage
-          icon={<SearchIcon />}
+          icon={<InfoMessageIcon />}
           title={formatMessage(messages.noResults)}
           content=""
         />
