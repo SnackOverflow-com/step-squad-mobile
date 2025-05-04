@@ -49,20 +49,20 @@ declare module "styled-components/native" {
       "700": string;
     };
     fontSize: {
-      xs: number;
-      s: number;
-      m: number;
-      l: number;
-      xl: number;
-      xxl: number;
+      xs: string;
+      s: string;
+      m: string;
+      l: string;
+      xl: string;
+      xxl: string;
     };
     lineHeight: {
-      xs: number;
-      s: number;
-      m: number;
-      l: number;
-      xl: number;
-      xxl: number;
+      xs: string;
+      s: string;
+      m: string;
+      l: string;
+      xl: string;
+      xxl: string;
     };
   }
 }
